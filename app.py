@@ -98,7 +98,7 @@ def index(dateURL=getDateToday()):
 	
 
 	return render_template("index.html", power_pv=power_pv, actual_power_pv=actual_power_pv, today_energy_pv=today_energy_pv,
-		total_energy_pv, timestampList=timestampList, dateDB=dateDB,
+		total_energy_pv=total_energy_pv, timestampList=timestampList, dateDB=dateDB,
 		dateYesterday=dateYesterday, dateTomorrow=dateTomorrow)
 
 
