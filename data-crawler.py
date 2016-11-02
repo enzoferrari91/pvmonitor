@@ -3,6 +3,7 @@ import serial
 import time
 import sys
 import sqlite3
+import config
 
 #serialElster = '/dev/ttyUSB0'  # Serial port for Elster AS 1440
 serialArduino = '/dev/ttyACM0' # Serial port for Arduino
@@ -160,7 +161,7 @@ if power_pv < 70:             # Threshold for Power
 ################################################################################################
 
 print("Write new data to database...",end="")
-db = sqlite3.connect("/home/pi/Desktop/python/hoelzl/power.db")
+db = sqlite3.connect(config.dbfilepath)
 cur = db.cursor()
 datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
 
