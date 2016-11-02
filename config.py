@@ -5,7 +5,7 @@
 
 
 # File path for database ################################################
-dbfilepath = "/home/pi/Desktop/python/hoelzl/power.db"
+dbfilepath = "/home/pi/pvmonitor-db/power.db"
 #########################################################################
 
 
