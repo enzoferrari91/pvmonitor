@@ -1,0 +1,3 @@
+Starte Flask Webserver...
+Stopping web server: apache2 ... waiting .
+Fertig:  Mi 2. Nov 09:06:03 CET 2016
