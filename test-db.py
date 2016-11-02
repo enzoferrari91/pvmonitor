@@ -1,8 +1,9 @@
 import sqlite3
 import time
 import random
+import config
 
-db = sqlite3.connect("/home/pi/Desktop/python/hoelzl/power.db")
+db = sqlite3.connect(config.dbfilepath)
 
 cur = db.cursor()
 
