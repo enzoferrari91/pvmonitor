@@ -2,7 +2,7 @@
 
 echo "Starte Flask Webserver..."
 
-cd /home/pi/Desktop/python/hoelzl
+cd /home/pi/pvmonitor
 
 sudo service apache2 stop
 
