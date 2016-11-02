@@ -82,7 +82,7 @@ def index(dateURL=getDateToday()):
 		actual_power_pv = power_pv[-1] # last entry in list
 		today_energy_pv = round( sum([(i/12)/1000 for i in power_pv]), 1 ) # 5 minute intervall = factor 12
 
-		#total_energy_pv = selectEnergyDB()
+		total_energy_pv = selectEnergyDB()
 
 		power_pv.extend((288-len(power_pv))*[0])
 		timestampList.extend((288-len(timestampList))*[""])
@@ -94,11 +94,11 @@ def index(dateURL=getDateToday()):
 		timestampList = []
 		actual_power_pv = 0
 		today_energy_pv = 0
-		#total_energy_pv = 0
+		total_energy_pv = 0
 	
 
 	return render_template("index.html", power_pv=power_pv, actual_power_pv=actual_power_pv, today_energy_pv=today_energy_pv,
-		timestampList=timestampList, dateDB=dateDB,
+		total_energy_pv, timestampList=timestampList, dateDB=dateDB,
 		dateYesterday=dateYesterday, dateTomorrow=dateTomorrow)
 
 
