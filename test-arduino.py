@@ -3,8 +3,6 @@ import serial
 import time
 import sys
 
-# Elster AS 1440
-#serialport = '/dev/tty.usbmodemfd121'
 serialport = '/dev/ttyACM0'
 
 def send(port, bytes, tr):
@@ -28,8 +26,6 @@ while c != "!":
         print(c,end="")
         c = Elster.read()
 
-#c=Elster.readline()
-#print(c,end="")
 print("\nEnde")
 
 
