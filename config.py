@@ -1,14 +1,12 @@
 ##########################
-# 	Config file 	 #
+# 		Config file 	 #
 ##########################
 
+import platform
 
-
-# File path for database ################################################
-dbfilepath = "/home/pi/pvmonitor-db/power.db"
-#########################################################################
-
-
-# Raspberry or MacOSX ###################################################
-webserver = "Raspberry"
-#########################################################################
+if platform.system() == "Linux":
+	dbfilepath = "/home/pi/pvmonitor-db/power.db"
+	webserver = "Raspberry"
+else:
+	dbfilepath = "/Users/Martin/Desktop/meter/firmware hoelzl/power.db"
+	webserver = "MacOSX"
