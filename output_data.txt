@@ -1,5 +1,0 @@
-Starting communication!
-ARDUINO...Open serial port /dev/tty/ACM0...Ready to receive...Result OK!
-Write new data to database...OK!
-Sucessfully finished all tasks!
-2016-11-02 14:00:04
