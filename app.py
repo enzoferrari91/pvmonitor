@@ -120,12 +120,33 @@ def energystats():
 def tables():
 	return render_template("tables.html")
 
+@app.route("/timeseries")
+def timeseries():
+	return render_template("timeseries.html")
+
 @app.route("/showtables", methods=['POST'])
 def showtables():
-	dateDB = request.form['text']
+	dateDB = request.form['dateselect']
 	power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
+
+	max_power_pv = max(power_pv)
 	power_pv_tablelist = zip(power_pv,timestampList)
-	return render_template("showtables.html", power_pv_tablelist=power_pv_tablelist)
+	return render_template("showtables.html", power_pv_tablelist=power_pv_tablelist, max_power_pv=max_power_pv)
+
+@app.route("/showtimeseries", methods=['POST'])
+def showtimeseries():
+	dateDB = request.form['dateselect']
+
+	try:
+		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
+
+	except:
+		power_bez = []
+		power_einsp = []
+		power_pv = []
+		timestampList = []
+
+	return render_template("showtimeseries.html", power_pv=power_pv, timestampList=timestampList)
 
 
 @app.route("/system_messages")
