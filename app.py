@@ -148,12 +148,7 @@ def showtables():
 def showtimeseries():
 	date_from_DB = request.form['dateselect_from']
 	date_to_DB = request.form['dateselect_to']
-
 	temp, date_to_DB = getDates(date_to_DB)
-
-	print(date_from_DB)
-	print(date_to_DB)
-
 
 	try:
 		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB,mode="range")
