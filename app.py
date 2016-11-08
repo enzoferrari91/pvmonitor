@@ -37,11 +37,18 @@ def getDates(dateDB):
 	return(dateYesterday, dateTomorrow)
 
 # Get power data from SQLite3
-def selectPowerDB(dateDB):
+def selectPowerDB(date_from_DB, date_to_DB="", mode="day"):
 	cur = g.db.cursor()
-	cur.execute("SELECT * FROM powerLog WHERE datetime LIKE ?", (dateDB+'%' ,))
-	data = cur.fetchall()
-	
+
+	# Default mode "day"
+	if mode =="day":
+		cur.execute("SELECT * FROM powerLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
+		data = cur.fetchall()
+	# Mode "daterange"
+	else:
+		cur.execute("SELECT * FROM powerLog WHERE datetime >= ? and datetime < ?", (date_from_DB, date_to_DB))
+		data = cur.fetchall()
+
 	# Create lists
 	power_bez = list(zip(*data)[1])
 	power_einsp = list(zip(*data)[2])
@@ -62,17 +69,21 @@ def selectEnergyDB(year=0, mode="sum"):
 	else:
 		cur.execute("SELECT * FROM dayLog WHERE datetime LIKE ?", (year+'%' ,))
 		data = cur.fetchall()
-	
+
+	# Default mode "sum" 
 	if mode == "sum":
 		list_energy_pv = list(zip(*data)[3])
 		total_energy_pv = sum(list_energy_pv)
 		return(total_energy_pv)
+	# Mode "list"
 	else:
 		list_energy_pv = list(zip(*data)[3])
 		timestampList = list(zip(*data)[0])
 		timestampList = [str(x) for x in timestampList]
 		timestampList = [extractdate(x) for x in timestampList]
 		return(list_energy_pv, timestampList)
+
+
 
 @app.route("/")
 @app.route("/<dateURL>")
@@ -135,10 +146,17 @@ def showtables():
 
 @app.route("/showtimeseries", methods=['POST'])
 def showtimeseries():
-	dateDB = request.form['dateselect']
+	date_from_DB = request.form['dateselect_from']
+	date_to_DB = request.form['dateselect_to']
+
+	temp, date_to_DB = getDates(date_to_DB)
+
+	print(date_from_DB)
+	print(date_to_DB)
+
 
 	try:
-		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
+		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB,mode="range")
 
 	except:
 		power_bez = []

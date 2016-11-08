@@ -75,7 +75,8 @@
                         <div class="panel-body">
                         
                             <form action="/showtimeseries" method="post">
-                                <input type="text" id="datepicker" name="dateselect"/>
+                                <input type="text" id="datepicker1" name="dateselect_from"/>
+                                <input type="text" id="datepicker2" name="dateselect_to"/>
                                 <input type="submit"/>
                             </form>
 
@@ -100,8 +101,10 @@
 
     <script>
         $( function() {
-            $( "#datepicker" ).datepicker();
-            $( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd");
+            $( "#datepicker1" ).datepicker();
+            $( "#datepicker1" ).datepicker( "option", "dateFormat", "yy-mm-dd");
+            $( "#datepicker2" ).datepicker();
+            $( "#datepicker2" ).datepicker( "option", "dateFormat", "yy-mm-dd");
         });
     </script>
 
