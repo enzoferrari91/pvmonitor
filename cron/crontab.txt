@@ -1,11 +1,11 @@
 # Periodische Abfrage Daten
 */15 * * * * sudo python Desktop/python/hoelzl/data-crawler.py > Desktop/python/hoelzl/output_data.txt
 
-# Reboot jeden Tag um 00:01
-1 0 * * * Desktop/python/hoelzl/reboot.sh > Desktop/python/hoelzl/output_reboot.txt
+# Reboot jeden Tag um 09:01 und 18:01
+1 9,18 * * * Desktop/python/hoelzl/reboot.sh > Desktop/python/hoelzl/output_reboot.txt
 
-# Nach Reboot starte Webserver Flask um 00:06
-6 0 * * * Desktop/python/hoelzl/restart.sh > Desktop/python/hoelzl/output_restart.txt
+# Nach Reboot starte Webserver Flask um 09:06 und 18:06
+6 9,18 * * * Desktop/python/hoelzl/restart.sh > Desktop/python/hoelzl/output_restart.txt
 
 # Fasse jeden Tag am Ende 23:56 Energiemengen zusammen
 56 23 * * * sudo python Desktop/python/hoelzl/daylog.py
