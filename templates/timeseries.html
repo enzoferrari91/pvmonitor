@@ -69,11 +69,16 @@
                 <div class="col-lg-12">
                     <div class="panel panel-red">
                         <div class="panel-red panel-heading clearfix">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Statistiken
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Datumswahl
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div id="container1"></div>
+                        
+                            <form action="/showtimeseries" method="post">
+                                <input type="text" id="datepicker" name="dateselect"/>
+                                <input type="submit"/>
+                            </form>
+
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -88,16 +93,17 @@
     <!-- /#wrapper -->
 
 
-    <!-- Variable Loader Script -->
-    <script>
-        var list_energy_pv = {{ list_energy_pv|safe }}; //globale Variablen
-        var timestampList = {{ timestampList|safe }}
-
-    </script>
 
     <!-- jQuery + jQueryUI -->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $( function() {
+            $( "#datepicker" ).datepicker();
+            $( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd");
+        });
+    </script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src={{ url_for('static', filename='js/bootstrap.min.js') }}></script>
@@ -108,7 +114,7 @@
     <!-- Highcharts -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src={{ url_for('static', filename='js/highcharts-energystats.js') }}></script>
+    <script src={{ url_for('static', filename='js/highcharts-data.js') }}></script>
 
     <!-- Custom Theme JavaScript -->
     <script type="text/js" src={{ url_for('static', filename='js/sb-admin-2.js') }}></script>

@@ -3,9 +3,6 @@
 
 <head>
 
-    <!--
-    <meta charset="utf-8">
-    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>PV Monitor</title>
@@ -23,6 +20,10 @@
 
     <!-- Custom Fonts -->
     <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/font-awesome.min.css') }}>
+
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/jquery-ui.css') }}>
+    <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/jquery-ui.theme.css') }}>
 
 </head>
 
@@ -47,7 +48,10 @@
                             <a href="/energystats"><i class="fa fa-bar-chart-o fa-fw"></i> Statistik</a>
                         </li>
                         <li>
-                            <a href="/tables"><i class="fa fa-table fa-fw"></i> Tabellen</a>
+                            <a href="/timeseries"><i class="fa fa-home fa-fw"></i> Anzeige Zeitserien</a>
+                        </li>
+                        <li>
+                            <a href="/tables"><i class="fa fa-table fa-fw"></i> Anzeige Tabellen</a>
                         </li>
                         <li>
                             <a href="/system_messages"><i class="fa fa-wrench fa-fw"></i> System</a>
@@ -71,7 +75,7 @@
                         <div class="panel-body">
                         
                             <form action="/showtables" method="post">
-                                <input class="date" type="text" size="32" name="text"/>
+                                <input type="text" id="datepicker" name="dateselect"/>
                                 <input type="submit"/>
                             </form>
 
@@ -89,15 +93,17 @@
     <!-- /#wrapper -->
 
 
-    <!-- Variable Loader Script -->
+
+    <!-- jQuery + jQueryUI -->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <script>
-        var power_pv = {{ power_pv|safe }}; //globale Variablen
-        var timestampList = {{ timestampList|safe }}
-
+        $( function() {
+            $( "#datepicker" ).datepicker();
+            $( "#datepicker" ).datepicker( "option", "dateFormat", "yy-mm-dd");
+        });
     </script>
-
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src={{ url_for('static', filename='js/bootstrap.min.js') }}></script>

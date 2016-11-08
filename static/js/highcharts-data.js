@@ -42,6 +42,9 @@ $(function () {
             minorGridLineColor: '#505053',
             tickColor: '#707073',
             tickWidth: 1,
+
+            max: 5000,
+            min:0
         },
         
         legend: {
