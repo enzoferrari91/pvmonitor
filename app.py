@@ -3,6 +3,7 @@ from flask import render_template
 from flask import request
 from flask import url_for
 from flask import g
+from flask import jsonify
 
 import sqlite3
 import time
@@ -161,10 +162,29 @@ def showtimeseries():
 
 	return render_template("showtimeseries.html", power_pv=power_pv, timestampList=timestampList)
 
-
 @app.route("/system_messages")
 def system_messages():
 	return render_template("system_messages.html")
+
+@app.route("/_get_data")
+def add_numbers():
+    #dateselect_from = request.args.get('dateselect_from')
+    #dateselect_to = request.args.get('dateselect_to')
+
+    data_activity = config.activity
+    return jsonify(**data_activity)
+
+
+    #return jsonify(result="OK")
+
+@app.route("/sync")
+def sync():
+	return render_template("synchr.html")
+
+@app.route("/jsonTest")
+def jsonTest():
+	return render_template("jsonTest.html")
+
 
 @app.before_request
 def before_request():
