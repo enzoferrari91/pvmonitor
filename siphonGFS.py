@@ -72,8 +72,7 @@ variables = [
 # Zwettl
 lat = 48.50
 lon = 15.25
-lat=47.6
-lon=15
+
 start, end = start_end()
 print("Start/UTC: " + str(start))
 print("End  /UTC: " + str(end))
