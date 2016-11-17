@@ -70,8 +70,10 @@ variables = [
 			]
 
 # Zwettl
-lon = 48.50
-lat = 15.25
+lat = 48.50
+lon = 15.25
+lat=47.6
+lon=15
 start, end = start_end()
 print("Start/UTC: " + str(start))
 print("End  /UTC: " + str(end))
@@ -81,7 +83,7 @@ latest_ds = list(latest_gfs.datasets.values())[0]
 ncss = NCSS(latest_ds.access_urls['NetcdfSubset'])
 
 query = ncss.query()
-query.lonlat_point(lat,lon)
+query.lonlat_point(lon,lat)
 query.time_range(start,end)
 query.variables(variables[1],variables[2],variables[3],variables[4],variables[5])
 query.accept('netcdf4')
