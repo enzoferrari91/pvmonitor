@@ -21,6 +21,11 @@ try:
 except:
 	print("Table 'forecastLog' already exists.")
 
+try:
+	cur.execute("CREATE TABLE forecastLogAPI(datetime DATETIME NOT NULL, ghi_sfc FLOAT(7,2));")
+except:
+	print("Table 'forecastLogAPI' already exists.")
+
 db.close()
 
 print("Database sucessfully created!")

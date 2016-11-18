@@ -5,11 +5,13 @@
 import platform
 
 if platform.system() == "Linux":
-	dbfilepath = "/home/pi/pvmonitor-db/power.db"
-	webserver = "Raspberry"
+    dbfilepath = "/home/pi/pvmonitor-db/power.db"
+    apifilepath = "/home/pi/planetosAPI.txt"
+    webserver = "Raspberry"
 else:
-	dbfilepath = "/Users/Martin/Desktop/pvmonitor/pvmonitor/testdb/power.db"
-	webserver = "MacOSX"
+    dbfilepath = "/Users/Martin/Desktop/pvmonitor/pvmonitor/testdb/power.db"
+    apifilepath = "/Users/Martin/Desktop/pvmonitor/planetosAPI.txt"
+    webserver = "MacOSX"
 
 # Zwettl
 lat = 48.50
