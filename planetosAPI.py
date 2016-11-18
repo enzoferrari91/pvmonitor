@@ -58,8 +58,6 @@ url = ( "http://api.planetos.com/v1/datasets/noaa_gfs_global_sflux_0.12d/point?"
 		"&var="   + var +
 		"&reftime_start=" + url_date + "T18:00:00Z&count=" + str(count) )
 
-print(url)
-
 r = requests.get(url)
 data = json.loads(r.text)
 
