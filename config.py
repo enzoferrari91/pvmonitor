@@ -11,6 +11,14 @@ else:
 	dbfilepath = "/Users/Martin/Desktop/pvmonitor/pvmonitor/testdb/power.db"
 	webserver = "MacOSX"
 
+# Zwettl
+lat = 48.50
+lon = 15.25
+
+
+
+# TEST SET - ERASE SOON...
+##########################################################
 activity  = {
     "xData": ["2016-11-01", "2016-11-02", "2016-11-03"],
     "datasets": [{
@@ -33,3 +41,4 @@ activity  = {
         "valueDecimals": 0
     }]
 }
+##########################################################

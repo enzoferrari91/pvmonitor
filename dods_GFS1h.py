@@ -45,8 +45,8 @@ variables = ["tcdcclm","tmp2m", "ugrd10m", "vgrd10m" ,"dswrfsfc"]
 modelrun = {"12z" : "[12:35]", "18z" : "[6:29]"}
 
 # Zwettl
-lat = 48.50
-lon = 15.25
+lat = config.lat
+lon = config.lon
 
 from_zone = tz.gettz('UTC')
 to_zone = tz.gettz('Europe/Vienna')
