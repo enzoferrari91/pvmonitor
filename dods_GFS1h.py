@@ -4,7 +4,7 @@ from datetime import datetime
 from datetime import timedelta
 from dateutil import tz
 import sqlite3
-import config
+#import config
 
 def UTCtoCET(timestampUTC):
 	#timestampUTC = datetime.strptime(timestampUTC, '%Y-%m-%d %H:%M:%S')
@@ -42,7 +42,7 @@ variables = ["tcdcclm","tmp2m", "ugrd10m", "vgrd10m" ,"dswrfsfc"]
 # "12z" ... 1200 UTC run day n --> day n+1 00:00 - 21:00 UTC 
 # "18z" ... 1800 UTC run day n --> day n+1 00:00 - 21:00 UTC
 # --------------------------------------------------------------------
-modelrun = {"12z" : "[4:11]", "18z" : "[2:9]"}
+modelrun = {"12z" : "[12:35]", "18z" : "[6:29]"}
 
 # Zwettl
 lat = 48.50
@@ -55,7 +55,7 @@ today = datetime.today()
 yesterday = today - timedelta(days=1)
 
 timestamp_base = datetime(today.year, today.month, today.day, 0, 0, 0, 0)
-timestamp_list = [timestamp_base + timedelta(hours=x*3) for x in range(0, 8)]
+timestamp_list = [timestamp_base + timedelta(hours=x) for x in range(0, 23)]
 timestamp_list = [UTCtoCET(timestamp) for timestamp in timestamp_list]
 
 url_date = str(yesterday.year) + str(yesterday.month) + str(yesterday.day)
@@ -72,8 +72,8 @@ out.append(timestamp_list)
 for v in variables:
 
 	print("Download: " + v)
-	url = ("http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs"  + 
-			url_date + "/gfs_0p25_18z.ascii?" + v + modelrun["18z"] +
+	url = ("http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25_1hr/gfs"  + 
+			url_date + "/gfs_0p25_1hr_18z.ascii?" + v + modelrun["18z"] +
 			"[" + url_lat + ":" + url_lat + "]" +
 			"[" + url_lon + ":" + url_lon + "]")
 	print(url)
@@ -84,7 +84,7 @@ for v in variables:
 	else:
 		print("ERROR - Dateset not available...using previous modelrun '12z' instead...")
 		url = ("http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs"  + 
-		url_date + "/gfs_0p25_12z.ascii?" + v + modelrun["12z"] +
+		url_date + "/gfs_0p25_1hr_12z.ascii?" + v + modelrun["12z"] +
 		"[" + url_lat + ":" + url_lat + "]" +
 		"[" + url_lon + ":" + url_lon + "]")
 		print(url)
@@ -98,7 +98,7 @@ for v in variables:
 	data = data.replace(" ","")
 	data = re.sub("[\(\[].*?[\)\]]","",data)
 	datalist = data.split(",")
-	datalist = datalist[2:10]
+	datalist = datalist[2:26]
 	datalist = [float(x) for x in datalist]
 	print(datalist)
 	out.append(datalist)
