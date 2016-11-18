@@ -4,7 +4,7 @@ from datetime import datetime
 from datetime import timedelta
 from dateutil import tz
 import sqlite3
-#import config
+import config
 
 def UTCtoCET(timestampUTC):
 	#timestampUTC = datetime.strptime(timestampUTC, '%Y-%m-%d %H:%M:%S')
