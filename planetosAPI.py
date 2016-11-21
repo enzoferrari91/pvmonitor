@@ -29,7 +29,6 @@ def savetoDB(db_data):
 	db.close()
 	print("DATABASE - OK!")
 
-
 f = open(config.apifilepath,"r")
 API_KEY = f.read()
 f.close()
