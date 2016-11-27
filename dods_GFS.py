@@ -57,7 +57,6 @@ yesterday = today - timedelta(days=1)
 timestamp_base = datetime(today.year, today.month, today.day, 0, 0, 0, 0)
 timestamp_list = [timestamp_base + timedelta(hours=x*3) for x in range(0, 8)]
 timestamp_list = [UTCtoCET(timestamp) for timestamp in timestamp_list]
-print timestamp_list
 
 url_date = str(yesterday.year) + str(yesterday.month) + str(yesterday.day)
 url_lat = str(int(360 + lat / 0.25))
