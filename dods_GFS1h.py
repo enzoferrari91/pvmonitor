@@ -55,7 +55,7 @@ today = datetime.today()
 yesterday = today - timedelta(days=1)
 
 timestamp_base = datetime(today.year, today.month, today.day, 0, 0, 0, 0)
-timestamp_list = [timestamp_base + timedelta(hours=x) for x in range(0, 23)]
+timestamp_list = [timestamp_base + timedelta(hours=x) for x in range(0, 24)]
 timestamp_list = [UTCtoCET(timestamp) for timestamp in timestamp_list]
 
 url_date = str(yesterday.year) + str(yesterday.month) + str(yesterday.day)
@@ -104,6 +104,7 @@ for v in variables:
 	out.append(datalist)
 
 dataDB = zip(*out)
+print dataDB
 savetoDB(dataDB)
 
 
