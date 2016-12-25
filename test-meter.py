@@ -69,7 +69,8 @@ def readElster():
     time.sleep(tr)
 
     datablock = ""
-    if (Elster.read() == STX):
+    #if (Elster.read() == STX):
+    if(True):
     	x = Elster.read()
     	BCC = 0
     	while (x  != '!'):
