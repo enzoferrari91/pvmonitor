@@ -21,6 +21,7 @@ def read_datablock():
     time.sleep(tr)
     Request_message='/?!\r\n'
     send(Elster, Request_message, tr)
+    print("Sende Request")
     time.sleep(3)
 
     datablock = ""
