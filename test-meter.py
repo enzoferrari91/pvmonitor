@@ -24,7 +24,7 @@ def read_datablock():
     print("Sende Request")
     
     Identification_message=Elster.readline()
-
+    print(Identification_message)
     
     speed = Identification_message[4]
 
