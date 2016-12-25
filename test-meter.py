@@ -3,7 +3,7 @@ import serial
 import time
 import sys
 
- serialElster = '/dev/ttyUSB0'  # Serial port for Elster AS 1440
+serialElster = '/dev/ttyUSB0'  # Serial port for Elster AS 1440
 
 
 def extractobis(data,obis):
@@ -105,4 +105,4 @@ def readElster():
 print("Starting communication!")
 print("ELSTER...",end="")
 data = readElster()
-print data
+print(data)
