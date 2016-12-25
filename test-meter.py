@@ -17,7 +17,7 @@ def read_datablock():
 
   try:
 
-    Elster=serial.Serial(port=serialport, baudrate=4800, bytesize=7, parity='E', stopbits=1, timeout=1.5, dsrdtr=True)
+    Elster=serial.Serial(port=serialport, baudrate=300, bytesize=7, parity='E', stopbits=1, timeout=1.5, dsrdtr=True)
     time.sleep(tr)
     Request_message='/?!\r\n'
     send(Elster, Request_message, tr)
