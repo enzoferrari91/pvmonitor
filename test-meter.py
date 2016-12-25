@@ -27,6 +27,7 @@ def read_datablock():
     print(Identification_message)
     
     speed = Identification_message[4]
+    print(speed)
 
     if (speed == "1"): new_baud_rate = 600
     elif (speed == "2"): new_baud_rate = 1200
