@@ -5,6 +5,10 @@ import sys
 
 serialport = '/dev/ttyUSB0'  # Serial port for Elster AS 1440
 
+def extractobis(data,obis):
+  start = data.index(obis)
+  return float(data[(start+6):(start+14)])
+
 def send(port, bytes, tr): 
   port.write(bytes)
   time.sleep(tr)
@@ -40,4 +44,9 @@ def read_datablock():
     return ""
 
 data = read_datablock()
-print (data)
+
+zst_bez = extractobis(data,"1.8.1")
+zst_einsp = extractobis(data,"2.8.1")
+
+print(zst_bez)
+print(zst_einsp)
