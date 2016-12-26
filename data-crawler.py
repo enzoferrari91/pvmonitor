@@ -68,21 +68,23 @@ if power_pv < 70:             # Threshold for Power
   power_pv = 0
 
 
-"""
+####################################################
 print("ELSTER...",end="")
 data = readElster()
 
-####################################################
 zst_bez = extractobis(data,"1.8.1")
 zst_einsp = extractobis(data,"2.8.1")
 temp_zst = str(zst_bez) + ";" + str(zst_einsp)
 
-print("ZST: ", end="")
+print("ZST neu: ", end="")
 print(temp_zst)
 
-f = open('temp_zst.txt' , 'r')
+f = open(config.zstfilepath , 'r')
 s = f.read()
 f.close()
+
+print("ZST alt: ", end="")
+print(s)
 
 s = s.split(";")
 old_zst_list = [float(i) for i in s]
@@ -101,15 +103,14 @@ print("Leistungen:")
 print(power_bez)
 print(power_einsp)
 ####################################################
-"""
+
 
 print("Write new data to database...",end="")
 db = sqlite3.connect(config.dbfilepath)
 cur = db.cursor()
 datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
 
-#sql_insert = ("""INSERT INTO powerLog (datetime,power_bez,power_einsp,power_pv) VALUES (?,?,?,?)""",(datetimeWrite,power_bez,power_einsp,power_pv))
-sql_insert = ("""INSERT INTO powerLog (datetime,power_pv) VALUES (?,?)""",(datetimeWrite,power_pv))
+sql_insert = ("""INSERT INTO powerLog (datetime,power_bez,power_einsp,power_pv) VALUES (?,?,?,?)""",(datetimeWrite,power_bez,power_einsp,power_pv))
 cur.execute(*sql_insert)
 db.commit()
 db.close()

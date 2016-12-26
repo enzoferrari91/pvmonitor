@@ -78,12 +78,15 @@ zst_bez = extractobis(data,"1.8.1")
 zst_einsp = extractobis(data,"2.8.1")
 temp_zst = str(zst_bez) + ";" + str(zst_einsp)
 
-print("ZST: ", end="")
+print("ZST neu: ", end="")
 print(temp_zst)
 
 f = open(config.zstfilepath , 'r')
 s = f.read()
 f.close()
+
+print("ZST alt: ", end="")
+print(s)
 
 s = s.split(";")
 old_zst_list = [float(i) for i in s]
