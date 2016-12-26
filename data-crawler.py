@@ -99,9 +99,9 @@ f = open(config.zstfilepath, 'w')
 f.write(temp_zst)
 f.close()
 
-print("Leistungen:")
-print(power_bez)
-print(power_einsp)
+print("Leistungen [W]:")
+print("Bezug:", power_bez)
+print("Einspeisung:", power_einsp)
 ####################################################
 
 
