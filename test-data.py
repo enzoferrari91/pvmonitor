@@ -81,7 +81,7 @@ temp_zst = str(zst_bez) + ";" + str(zst_einsp)
 print("ZST: ", end="")
 print(temp_zst)
 
-f = open('temp_zst.txt' , 'r')
+f = open(config.zstfilepath , 'r')
 s = f.read()
 f.close()
 
