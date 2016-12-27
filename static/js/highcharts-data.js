@@ -64,9 +64,22 @@ $(function () {
             }           
         },
         
-        series: [{
-            name: 'PV-Leistung',
-            data: power_pv
-        }]
+        series: 
+        [
+            {
+                name: 'PV-Leistung',
+                data: power_pv
+            },
+            {
+                name: 'Netz-Bezug',
+                data: power_bez,
+                color: '#e74c3c'
+            },
+            {
+                name: 'Netz-Einspeisung',
+                data: power_einsp,
+                color: '#3498db'
+            }
+        ]
     });
 });

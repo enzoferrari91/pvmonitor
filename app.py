@@ -101,11 +101,19 @@ def index(dateURL=getDateToday()):
 
 	try:
 		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
+
+		actual_power_bez = power_bez[-1]
+		actual_power_einsp = power_einsp[-1]
 		actual_power_pv = power_pv[-1] # last entry in list
+
+		today_energy_bez = round( sum([(i/12)/1000 for i in power_bez]), 1 ) # 5 minute intervall = factor 12
+		today_energy_einsp = round( sum([(i/12)/1000 for i in power_einsp]), 1 ) # 5 minute intervall = factor 12
 		today_energy_pv = round( sum([(i/12)/1000 for i in power_pv]), 1 ) # 5 minute intervall = factor 12
 
 		total_energy_pv = selectEnergyDB()
 
+		power_bez.extend((288-len(power_bez))*[0])
+		power_einsp.extend((288-len(power_einsp))*[0])
 		power_pv.extend((288-len(power_pv))*[0])
 		timestampList.extend((288-len(timestampList))*[""])
 
@@ -119,8 +127,18 @@ def index(dateURL=getDateToday()):
 		total_energy_pv = 0
 	
 
-	return render_template("index.html", power_pv=power_pv, actual_power_pv=actual_power_pv, today_energy_pv=today_energy_pv,
-		total_energy_pv=total_energy_pv, timestampList=timestampList, dateDB=dateDB,
+	return render_template("index.html", 
+		power_bez=power_bez, 
+		actual_power_bez=actual_power_bez, 
+		today_energy_bez=today_energy_bez,
+		power_einsp=power_einsp, 
+		actual_power_einsp=actual_power_einsp, 
+		today_energy_einsp=today_energy_einsp,
+		power_pv=power_pv, 
+		actual_power_pv=actual_power_pv, 
+		today_energy_pv=today_energy_pv,
+		total_energy_pv=total_energy_pv, 
+		timestampList=timestampList, dateDB=dateDB,
 		dateYesterday=dateYesterday, dateTomorrow=dateTomorrow)
 
 @app.route("/energystats")

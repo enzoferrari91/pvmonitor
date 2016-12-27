@@ -92,8 +92,8 @@ old_zst_list = [float(i) for i in s]
 energy_bez =   (zst_bez - old_zst_list[0])     # kWh
 energy_einsp = (zst_einsp - old_zst_list[1])   # kWh
 
-power_bez =   (energy_bez * 12 * 1000)   # W (12 * 5-minutes per hour)
-power_einsp = (energy_einsp * 12 * 1000) # W
+power_bez =   int((energy_bez * 12 * 1000))   # W (12 * 5-minutes per hour)
+power_einsp = int((energy_einsp * 12 * 1000)) # W
 
 f = open(config.zstfilepath, 'w')
 f.write(temp_zst)

@@ -127,7 +127,7 @@
                                     <i class="fa fa-arrow-up fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">xxx kWh</div>
+                                    <div class="huge">{{ today_energy_einsp }} kWh</div>
                                     <div>Rückspeisung Netz</div>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@
                                     <i class="fa fa-arrow-down fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">xxx kWh</div>
+                                    <div class="huge">{{ today_energy_bez }} kWh</div>
                                     <div>Bezug Netz</div>
                                 </div>
                             </div>
@@ -200,6 +200,8 @@
 
     <!-- Variable Loader Script -->
     <script>
+        var power_bez = {{ power_bez|safe }}; //globale Variablen
+        var power_einsp = {{ power_einsp|safe }}; //globale Variablen
         var power_pv = {{ power_pv|safe }}; //globale Variablen
         var timestampList = {{ timestampList|safe }}
 
