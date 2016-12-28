@@ -38,3 +38,7 @@ db.commit()
 db.close()
 
 print("OK!")
+print("Status data...",end="")
+print(status)
+print(datetimeWrite)
+
