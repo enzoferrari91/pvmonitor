@@ -12,7 +12,7 @@ except:
 	print("Table 'powerLog' already exists.")
 
 try:
-	cur.execute("CREATE TABLE dayLog(datetime DATETIME NOT NULL, energy_bez FLOAT(7,2), energy_einsp FLOAT(7,2), energy_pv FLOAT(7,2));")
+	cur.execute("CREATE TABLE dayLog(datetime DATETIME NOT NULL, energy_bez FLOAT(7,2), energy_einsp FLOAT(7,2), energy_pv FLOAT(7,2), satus INT);")
 except:
 	print("Table 'dayLog' already exists.")
 
