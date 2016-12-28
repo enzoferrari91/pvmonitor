@@ -198,8 +198,16 @@ def showtimeseries():
 	return render_template("showtimeseries.html", power_pv=power_pv, timestampList=timestampList)
 
 @app.route("/system_messages")
-def system_messages():
+def system_messages():	
 	return render_template("system_messages.html")
+
+@app.route("/msg/<msg>")
+def msg(msg):
+	f = open((config.logfilepath + msg) , 'r')
+	s = f.read()
+	f.close()
+	return(s)
+
 
 @app.route("/_get_data")
 def add_numbers():
