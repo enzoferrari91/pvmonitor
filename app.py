@@ -102,6 +102,23 @@ def index(dateURL=getDateToday()):
 	try:
 		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
 
+		#################################################################
+		
+		l = len(power_bez)
+		temp = list()
+		temp.append(power_bez[0])
+		for i in range(1,l):
+			x = (power_bez[i-1] + power_bez[i]) / 2
+			temp.append(x)
+		power_bez = temp
+		
+		"""
+		l = len(power_bez)
+		for i in range(1,l):
+			power_bez[i] = (power_bez[i-1] + power_bez[i]) / 2
+		"""
+		#################################################################
+
 		actual_power_bez = power_bez[-1]
 		actual_power_einsp = power_einsp[-1]
 		actual_power_pv = power_pv[-1] # last entry in list
