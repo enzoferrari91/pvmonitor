@@ -198,8 +198,34 @@ def showtimeseries():
 	return render_template("showtimeseries.html", power_pv=power_pv, timestampList=timestampList)
 
 @app.route("/system_messages")
-def system_messages():	
-	return render_template("system_messages.html")
+def system_messages():
+	date_from_DB = "2016-11-01" # Start of operation
+	date_to_DB = getDateToday()
+
+	missing = ""
+
+	date_from_DB = datetime.strptime(date_from_DB,"%Y-%m-%d")
+	date_to_DB = datetime.strptime(date_to_DB,"%Y-%m-%d")
+
+	delta = (date_to_DB - date_from_DB).days
+	datelist = list()
+
+	for i in range(0,delta):
+		newdate = date_from_DB + timedelta(days=i)
+		datelist.append(datetime.strftime(newdate,"%Y-%m-%d"))
+	
+	for d in datelist:
+		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(d)
+
+		if not(len(power_bez) == 288 & len(power_einsp) == 288 & len(power_pv) == 288):
+			missing = missing + d + "; "
+
+	if missing == "":
+		output = "All datasets OK - No missing data"
+	else:
+		output = "Missing data: " + missing
+	
+	return render_template("system_messages.html", output=output)
 
 @app.route("/msg/<msg>")
 def msg(msg):
