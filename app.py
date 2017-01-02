@@ -37,6 +37,22 @@ def getDates(dateDB):
 
 	return(dateYesterday, dateTomorrow)
 
+def average(data):
+	"""
+	l = len(power_bez)
+	for i in range(1,l):
+		power_bez[i] = (power_bez[i-1] + power_bez[i]) / 2
+	"""
+	l = len(data)
+	temp = list()
+	temp.append(data[0])
+	for i in range(1,l):
+		x = (data[i-1] + data[i]) / 2
+		temp.append(x)
+	
+	data = temp
+	return(data)		
+
 # Get power data from SQLite3
 def selectPowerDB(date_from_DB, date_to_DB="", mode="day"):
 	cur = g.db.cursor()
@@ -102,23 +118,6 @@ def index(dateURL=getDateToday()):
 	try:
 		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
 
-		#################################################################
-		
-		l = len(power_bez)
-		temp = list()
-		temp.append(power_bez[0])
-		for i in range(1,l):
-			x = (power_bez[i-1] + power_bez[i]) / 2
-			temp.append(x)
-		power_bez = temp
-		
-		"""
-		l = len(power_bez)
-		for i in range(1,l):
-			power_bez[i] = (power_bez[i-1] + power_bez[i]) / 2
-		"""
-		#################################################################
-
 		actual_power_bez = power_bez[-1]
 		actual_power_einsp = power_einsp[-1]
 		actual_power_pv = power_pv[-1] # last entry in list
@@ -128,6 +127,9 @@ def index(dateURL=getDateToday()):
 		today_energy_pv = round( sum([(i/12)/1000 for i in power_pv]), 1 ) # 5 minute intervall = factor 12
 
 		total_energy_pv = selectEnergyDB()
+
+		power_bez = average(power_bez)
+		power_einsp = average(power_einsp)
 
 		power_bez.extend((288-len(power_bez))*[0])
 		power_einsp.extend((288-len(power_einsp))*[0])
