@@ -118,6 +118,9 @@ def index(dateURL=getDateToday()):
 	try:
 		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
 
+		power_bez = [0 if x is None else x for x in power_bez]
+		power_einsp = [0 if x is None else x for x in power_einsp]
+
 		actual_power_bez = power_bez[-1]
 		actual_power_einsp = power_einsp[-1]
 		actual_power_pv = power_pv[-1] # last entry in list
@@ -141,7 +144,11 @@ def index(dateURL=getDateToday()):
 		power_einsp = []
 		power_pv = []
 		timestampList = []
+		actual_power_bez = 0
+		actual_power_einsp = 0
 		actual_power_pv = 0
+		today_energy_bez = 0
+		today_energy_einsp = 0
 		today_energy_pv = 0
 		total_energy_pv = 0
 	
@@ -190,14 +197,16 @@ def showtimeseries():
 
 	try:
 		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB,mode="range")
-
+		power_bez = average(power_bez)
+		power_einsp = average(power_einsp)
+		
 	except:
 		power_bez = []
 		power_einsp = []
 		power_pv = []
 		timestampList = []
 
-	return render_template("showtimeseries.html", power_pv=power_pv, timestampList=timestampList)
+	return render_template("showtimeseries.html", power_bez=power_bez, power_einsp=power_einsp, power_pv=power_pv, timestampList=timestampList)
 
 @app.route("/system_messages")
 def system_messages():
