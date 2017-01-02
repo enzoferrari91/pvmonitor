@@ -109,7 +109,7 @@ except:
   power_einsp = 0
   datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
   f = open(config.alarmfilepath, 'a')
-  alarm = "\n" + datetimeWrite + " -- " + "Abfragefehler Zähler"
+  alarm = "\n" + datetimeWrite + "-- Abfragefehler Zaehler"
   f.write(alarm)
   f.close()
 ####################################################
