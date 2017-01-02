@@ -69,39 +69,49 @@ if power_pv < 70:             # Threshold for Power
 
 
 ####################################################
-print("ELSTER...",end="")
-data = readElster()
+try:
+  print("ELSTER...",end="")
+  data = readElster()
 
-zst_bez = extractobis(data,"1.8.1")
-zst_einsp = extractobis(data,"2.8.1")
-temp_zst = str(zst_bez) + ";" + str(zst_einsp)
+  zst_bez = extractobis(data,"1.8.1")
+  zst_einsp = extractobis(data,"2.8.1")
+  temp_zst = str(zst_bez) + ";" + str(zst_einsp)
 
-print("ZST neu: ", end="")
-print(temp_zst)
+  print("ZST neu: ", end="")
+  print(temp_zst)
 
-f = open(config.zstfilepath , 'r')
-s = f.read()
-f.close()
+  f = open(config.zstfilepath , 'r')
+  s = f.read()
+  f.close()
 
-print("ZST alt: ", end="")
-print(s)
+  print("ZST alt: ", end="")
+  print(s)
 
-s = s.split(";")
-old_zst_list = [float(i) for i in s]
+  s = s.split(";")
+  old_zst_list = [float(i) for i in s]
 
-energy_bez =   (zst_bez - old_zst_list[0])     # kWh
-energy_einsp = (zst_einsp - old_zst_list[1])   # kWh
+  energy_bez =   (zst_bez - old_zst_list[0])     # kWh
+  energy_einsp = (zst_einsp - old_zst_list[1])   # kWh
 
-power_bez =   int((energy_bez * 12 * 1000))   # W (12 * 5-minutes per hour)
-power_einsp = int((energy_einsp * 12 * 1000)) # W
+  power_bez =   int((energy_bez * 12 * 1000))   # W (12 * 5-minutes per hour)
+  power_einsp = int((energy_einsp * 12 * 1000)) # W
 
-f = open(config.zstfilepath, 'w')
-f.write(temp_zst)
-f.close()
+  f = open(config.zstfilepath, 'w')
+  f.write(temp_zst)
+  f.close()
 
-print("Leistungen [W]:")
-print("Bezug:", power_bez)
-print("Einspeisung:", power_einsp)
+  print("Leistungen [W]:")
+  print("Bezug:", power_bez)
+  print("Einspeisung:", power_einsp)
+
+except:
+  power_bez = 0
+  power_einsp = 0
+  datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
+  f = open(config.alarmfilepath, 'a')
+  alarm = "\n" + datetimeWrite + " -- " + "Abfragefehler Zähler"
+  f.write(alarm)
+  f.close()
 ####################################################
 
 
