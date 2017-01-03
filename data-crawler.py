@@ -60,14 +60,21 @@ def readArduino(msg):
   power = round(float(data),2) 
   return power
 
+try:
+  print("Starting communication!")
+  print("ARDUINO...",end="")
+  power_pv = readArduino("?")   # W
+  if power_pv < 70:             # Threshold for Power
+    power_pv = 0
 
-print("Starting communication!")
-print("ARDUINO...",end="")
-power_pv = readArduino("?")   # W
-if power_pv < 70:             # Threshold for Power
+except:
   power_pv = 0
-
-
+  datetimeWrite = (time.strftime("%Y-%m-%d ") + time.strftime("%H:%M:%S"))
+  f = open(config.alarmfilepath, 'a')
+  alarm = "\n" + datetimeWrite + "-- Abfragefehler Arduino"
+  f.write(alarm)
+  f.close()
+  
 ####################################################
 try:
   print("ELSTER...",end="")
