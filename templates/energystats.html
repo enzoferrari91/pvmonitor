@@ -70,10 +70,18 @@
                     <div class="panel panel-red">
                         <div class="panel-red panel-heading clearfix">
                             <i class="fa fa-bar-chart-o fa-fw"></i> Statistiken
+                            <br>
+                            <a href="{{ url_for('.energystats',year='2017') }}">>>> 2017</a><br>
+                            <a href="{{ url_for('.energystats',year='2016') }}">>>> 2016</a><br>
+                            <a href="{{ url_for('.energystats',year='0') }}">>>> All</a><br>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <div id="container1"></div>
+                            <br>
+                            <br>
+                            <div id="container2"></div>
+
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -91,6 +99,13 @@
     <!-- Variable Loader Script -->
     <script>
         var list_energy_pv = {{ list_energy_pv|safe }}; //globale Variablen
+        var list_energy_bez = {{ list_energy_bez|safe }}; //globale Variablen
+        var list_energy_einsp = {{ list_energy_einsp|safe }}; //globale Variablen
+
+        var total_energy_pv = [ {{ total_energy_pv|safe }} ]; //globale Variablen
+        var total_energy_bez = [ {{ total_energy_bez|safe }} ]; //globale Variablen
+        var total_energy_einsp = [ {{ total_energy_einsp|safe }} ]; //globale Variablen
+
         var timestampList = {{ timestampList|safe }}
 
     </script>

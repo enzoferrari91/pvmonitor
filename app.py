@@ -78,9 +78,9 @@ def selectPowerDB(date_from_DB, date_to_DB="", mode="day"):
 	return (power_bez, power_einsp, power_pv, timestampList)
 
 # Get energy data from SQLite3
-def selectEnergyDB(year=0, mode="sum"):
+def selectEnergyDB(year="0", mode="sum"):
 	cur = g.db.cursor()
-	if year == 0:
+	if year == "0":
 		cur.execute("SELECT * FROM dayLog")
 		data = cur.fetchall()
 	else:
@@ -89,16 +89,23 @@ def selectEnergyDB(year=0, mode="sum"):
 
 	# Default mode "sum" 
 	if mode == "sum":
+		list_energy_bez = list(zip(*data)[1])
+		list_energy_einsp = list(zip(*data)[2])
 		list_energy_pv = list(zip(*data)[3])
+
+		total_energy_bez = sum(list_energy_bez)
+		total_energy_einsp = sum(list_energy_einsp)
 		total_energy_pv = sum(list_energy_pv)
-		return(total_energy_pv)
+		return(total_energy_bez, total_energy_einsp, total_energy_pv)
 	# Mode "list"
 	else:
+		list_energy_bez = list(zip(*data)[1])
+		list_energy_einsp = list(zip(*data)[2])
 		list_energy_pv = list(zip(*data)[3])
 		timestampList = list(zip(*data)[0])
 		timestampList = [str(x) for x in timestampList]
 		timestampList = [extractdate(x) for x in timestampList]
-		return(list_energy_pv, timestampList)
+		return(list_energy_bez, list_energy_einsp, list_energy_pv, timestampList)
 
 
 
@@ -129,8 +136,6 @@ def index(dateURL=getDateToday()):
 		today_energy_einsp = round( sum([(i/12)/1000 for i in power_einsp]), 1 ) # 5 minute intervall = factor 12
 		today_energy_pv = round( sum([(i/12)/1000 for i in power_pv]), 1 ) # 5 minute intervall = factor 12
 
-		total_energy_pv = selectEnergyDB()
-
 		power_bez = average(power_bez)
 		power_einsp = average(power_einsp)
 
@@ -150,9 +155,7 @@ def index(dateURL=getDateToday()):
 		today_energy_bez = 0
 		today_energy_einsp = 0
 		today_energy_pv = 0
-		total_energy_pv = 0
 	
-
 	return render_template("index.html", 
 		power_bez=power_bez, 
 		actual_power_bez=actual_power_bez, 
@@ -162,15 +165,28 @@ def index(dateURL=getDateToday()):
 		today_energy_einsp=today_energy_einsp,
 		power_pv=power_pv, 
 		actual_power_pv=actual_power_pv, 
-		today_energy_pv=today_energy_pv,
-		total_energy_pv=total_energy_pv, 
+		today_energy_pv=today_energy_pv, 
 		timestampList=timestampList, dateDB=dateDB,
 		dateYesterday=dateYesterday, dateTomorrow=dateTomorrow)
 
 @app.route("/energystats")
-def energystats():
-	list_energy_pv, timestampList = selectEnergyDB(mode="list")
-	return render_template("energystats.html", list_energy_pv=list_energy_pv, timestampList=timestampList)
+@app.route("/energystats/<year>")
+def energystats(year="2017"):
+	list_energy_bez, list_energy_einsp, list_energy_pv, timestampList = selectEnergyDB(year=year, mode="list")
+	list_energy_bez = [0 if x is None else x for x in list_energy_bez]
+	list_energy_einsp = [0 if x is None else x for x in list_energy_einsp]
+
+	total_energy_bez = sum(list_energy_bez)
+	total_energy_einsp = sum(list_energy_einsp)
+	total_energy_pv = sum(list_energy_pv)
+
+	return render_template("energystats.html", 
+							list_energy_pv=list_energy_pv, list_energy_bez=list_energy_bez, 
+							list_energy_einsp=list_energy_einsp, 
+							total_energy_pv=total_energy_pv,
+							total_energy_bez=total_energy_bez,
+							total_energy_einsp=total_energy_einsp,
+							timestampList=timestampList)
 
 @app.route("/tables")
 def tables():
