@@ -210,7 +210,19 @@ def showtimeseries():
 
 @app.route("/system_messages")
 def system_messages():
-	date_from_DB = "2016-11-01" # Start of operation
+	return render_template("system_messages.html")
+
+@app.route("/msg/<msg>")
+def msg(msg):
+	f = open((config.logfilepath + msg) , 'r')
+	s = f.read()
+	f.close()
+	return(s)
+
+@app.route("/check_missing_data")
+def check_missing_data():
+	#date_from_DB = "2016-11-01" # Start of operation
+	date_from_DB = "2017-01-01"	 # New year
 	date_to_DB = getDateToday()
 
 	missing = ""
@@ -235,35 +247,15 @@ def system_messages():
 		output = "All datasets OK - No missing data"
 	else:
 		output = "Missing data: " + missing
-	
-	return render_template("system_messages.html", output=output)
 
-@app.route("/msg/<msg>")
-def msg(msg):
-	f = open((config.logfilepath + msg) , 'r')
+	return(output)
+
+@app.route("/alarmprotokoll")
+def alarmprotokoll():
+	f = open(config.alarmfilepath, 'r')
 	s = f.read()
 	f.close()
 	return(s)
-
-
-@app.route("/_get_data")
-def add_numbers():
-    #dateselect_from = request.args.get('dateselect_from')
-    #dateselect_to = request.args.get('dateselect_to')
-
-    data_activity = config.activity
-    return jsonify(**data_activity)
-
-
-    #return jsonify(result="OK")
-
-@app.route("/sync")
-def sync():
-	return render_template("synchr.html")
-
-@app.route("/jsonTest")
-def jsonTest():
-	return render_template("jsonTest.html")
 
 
 @app.before_request
@@ -280,3 +272,32 @@ if __name__ == "__main__":
 		app.run(host='0.0.0.0', debug=True)
 	if config.webserver == "Raspberry":
 		app.run(host='0.0.0.0', port=80)
+
+
+
+
+
+
+
+
+
+
+
+"""
+@app.route("/_get_data")
+def add_numbers():
+    #dateselect_from = request.args.get('dateselect_from')
+    #dateselect_to = request.args.get('dateselect_to')
+
+    data_activity = config.activity
+    return jsonify(**data_activity)
+    #return jsonify(result="OK")
+
+@app.route("/sync")
+def sync():
+	return render_template("synchr.html")
+
+@app.route("/jsonTest")
+def jsonTest():
+	return render_template("jsonTest.html")
+"""
