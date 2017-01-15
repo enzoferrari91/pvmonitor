@@ -93,6 +93,9 @@ def selectEnergyDB(year="0", mode="sum"):
 		list_energy_einsp = list(zip(*data)[2])
 		list_energy_pv = list(zip(*data)[3])
 
+		list_energy_bez = [0 if x is None else x for x in list_energy_bez]
+		list_energy_einsp = [0 if x is None else x for x in list_energy_einsp]
+
 		total_energy_bez = sum(list_energy_bez)
 		total_energy_einsp = sum(list_energy_einsp)
 		total_energy_pv = sum(list_energy_pv)
@@ -180,13 +183,34 @@ def energystats(year="2017"):
 	total_energy_einsp = sum(list_energy_einsp)
 	total_energy_pv = sum(list_energy_pv)
 
+	months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
+	list_month_energy_bez = list()
+	list_month_energy_einsp = list()
+	list_month_energy_pv = list()
+
+	for month in months:
+		try:
+			month_energy_bez, month_energy_einsp, month_energy_pv = selectEnergyDB(year=(year+"-"+month), mode="sum")
+		except:
+			month_energy_bez = 0
+			month_energy_einsp = 0
+			month_energy_pv = 0
+
+		list_month_energy_bez.append(month_energy_bez)
+		list_month_energy_einsp.append(month_energy_einsp)
+		list_month_energy_pv.append(month_energy_pv)
+
 	return render_template("energystats.html", 
 							list_energy_pv=list_energy_pv, list_energy_bez=list_energy_bez, 
 							list_energy_einsp=list_energy_einsp, 
 							total_energy_pv=total_energy_pv,
 							total_energy_bez=total_energy_bez,
 							total_energy_einsp=total_energy_einsp,
-							timestampList=timestampList)
+							timestampList=timestampList,
+							list_month_energy_bez=list_month_energy_bez,
+							list_month_energy_einsp=list_month_energy_einsp,
+							list_month_energy_pv=list_month_energy_pv,
+							months=months)
 
 @app.route("/tables")
 def tables():
