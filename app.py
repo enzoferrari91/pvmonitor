@@ -179,6 +179,18 @@ def energystats(year="2017"):
 	list_energy_bez = [0 if x is None else x for x in list_energy_bez]
 	list_energy_einsp = [0 if x is None else x for x in list_energy_einsp]
 
+	# Berechnung Eigenverbrauchsquote pro Tag ################################
+	list_ev_quote = list()
+
+	for i in range(0,len(timestampList)):
+		try:
+			ev_quote = (1 - (list_energy_einsp[i] / list_energy_pv[i])) * 100
+			ev_quote = round(ev_quote,0)
+			list_ev_quote.append(ev_quote)
+		except:
+			list_ev_quote.append(0)
+	#########################################################################
+
 	total_energy_bez = sum(list_energy_bez)
 	total_energy_einsp = sum(list_energy_einsp)
 	total_energy_pv = sum(list_energy_pv)
@@ -200,9 +212,21 @@ def energystats(year="2017"):
 		list_month_energy_einsp.append(month_energy_einsp)
 		list_month_energy_pv.append(month_energy_pv)
 
+	# Berechnung Eigenverbrauchsquote pro Monat ################################
+	list_ev_quote_month= list()
+	for i in range(0,len(months)):
+		try:
+			ev_quote_month = (1 - (list_month_energy_einsp[i] / list_month_energy_pv[i])) * 100
+			ev_quote_month = round(ev_quote_month,0)
+			list_ev_quote_month.append(ev_quote_month)
+		except:
+			list_ev_quote_month.append(0)
+	############################################################################
+
 	return render_template("energystats.html", 
 							list_energy_pv=list_energy_pv, list_energy_bez=list_energy_bez, 
-							list_energy_einsp=list_energy_einsp, 
+							list_energy_einsp=list_energy_einsp,
+							list_ev_quote = list_ev_quote, 
 							total_energy_pv=total_energy_pv,
 							total_energy_bez=total_energy_bez,
 							total_energy_einsp=total_energy_einsp,
@@ -210,6 +234,7 @@ def energystats(year="2017"):
 							list_month_energy_bez=list_month_energy_bez,
 							list_month_energy_einsp=list_month_energy_einsp,
 							list_month_energy_pv=list_month_energy_pv,
+							list_ev_quote_month=list_ev_quote_month,
 							months=months)
 
 @app.route("/tables")

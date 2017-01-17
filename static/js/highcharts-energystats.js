@@ -82,6 +82,11 @@ $(function () {
                 data: list_energy_einsp,
                 color: '#3498db',
                 borderColor  : '#3498db'
+            },
+            {
+                name: 'Eigenverbrauchsquote',
+                data: list_ev_quote,
+                color: '#f1c40f'
             }
         ]
     });
@@ -254,6 +259,11 @@ $(function () {
                 data: list_month_energy_einsp,
                 color: '#3498db',
                 borderColor  : '#3498db'
+            },
+            {
+                name: 'Eigenverbrauchsquote monatlich',
+                data: list_ev_quote_month,
+                color: '#f1c40f'
             }
         ]
     });
