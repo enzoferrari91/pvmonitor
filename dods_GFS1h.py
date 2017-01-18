@@ -58,7 +58,17 @@ timestamp_base = datetime(today.year, today.month, today.day, 0, 0, 0, 0)
 timestamp_list = [timestamp_base + timedelta(hours=x) for x in range(0, 24)]
 timestamp_list = [UTCtoCET(timestamp) for timestamp in timestamp_list]
 
-url_date = str(yesterday.year) + str(yesterday.month) + str(yesterday.day)
+# Fix Date-Bug
+if yesterday.month < 10: 
+	month = "0" + str(yesterday.month)
+else:
+	month = str(yesterday.month)
+if yesterday.day < 10: 
+	day = "0" + str(yesterday.day)
+else:
+	day = str(yesterday.day)
+
+url_date = str(yesterday.year) + month + day
 url_lat = str(int(360 + lat / 0.25))
 url_lon = str(int(lon / 0.25))
 
