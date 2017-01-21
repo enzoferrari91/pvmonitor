@@ -48,7 +48,7 @@ def interpol(tseries, timestamps, interval,filename):
 	output = list()
 
 	timestamps_interpol.append(timestamps[0])
-	tseries.append(tseries[0])
+	tseries_interpol.append(tseries[0])
 
 	for i in range(0,length-1):
 

@@ -9,6 +9,7 @@ import sqlite3
 import time
 from datetime import datetime, timedelta
 import config
+import forecast
 
 # FLASK APP
 app = Flask(__name__)
@@ -159,6 +160,13 @@ def index(dateURL=getDateToday()):
 		today_energy_einsp = 0
 		today_energy_pv = 0
 	
+
+	# FORECAST MODUL #
+	try:
+		fcast_pv = forecast.forecast(dateDB)
+	except:
+		fcast_pv = []
+
 	return render_template("index.html", 
 		power_bez=power_bez, 
 		actual_power_bez=actual_power_bez, 
@@ -170,7 +178,8 @@ def index(dateURL=getDateToday()):
 		actual_power_pv=actual_power_pv, 
 		today_energy_pv=today_energy_pv, 
 		timestampList=timestampList, dateDB=dateDB,
-		dateYesterday=dateYesterday, dateTomorrow=dateTomorrow)
+		dateYesterday=dateYesterday, dateTomorrow=dateTomorrow,
+		fcast_pv=fcast_pv)
 
 @app.route("/energystats")
 @app.route("/energystats/<year>")

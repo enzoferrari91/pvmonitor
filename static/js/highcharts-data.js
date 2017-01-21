@@ -79,6 +79,10 @@ $(function () {
                 name: 'Netz-Einspeisung',
                 data: power_einsp,
                 color: '#3498db'
+            },
+            {
+                name: 'PV-Forecast',
+                data: fcast_pv,
             }
         ]
     });
