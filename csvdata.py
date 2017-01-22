@@ -20,7 +20,7 @@ def selectDB(date_from_DB, date_to_DB):
 	cur.execute("SELECT * FROM forecastLog WHERE datetime >= ? and datetime < ?", (date_from_DB, date_to_DB))
 	data = cur.fetchall()
 
-	#cloud = list(zip(*data))[1]
+	cloud = list(zip(*data))[1]
 	ghi = list(zip(*data)[5])
 	timestampList_fcast = list(zip(*data)[0])
 	timestampList_fcast = [str(x) for x in timestampList_fcast]
@@ -36,10 +36,10 @@ def selectDB(date_from_DB, date_to_DB):
 	db.close()
 
 	# Return the lists
-	return (power_pv, timestampList, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API)
+	return (power_pv, timestampList, cloud, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API)
 
 
-def interpol(tseries, timestamps, interval,filename):
+def interpol(tseries, timestamps, interval):
 	# interval 12, 36
 	length = len(tseries)
 
@@ -71,14 +71,19 @@ def interpol(tseries, timestamps, interval,filename):
 	return(csv)
 
 
-power_pv, timestampList, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API = selectDB("2017-01-01","2017-01-17")
+power_pv, timestampList, cloud, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API = selectDB("2016-12-01","2016-12-31")
 
-csvfcast = interpol(ghi, timestampList_fcast,12,"fcast.csv")
-csvfcastAPI = interpol(ghi_API,timestampList_fcast_API,36,"fcastAPI.csv")
+csvfcastCLOUD = interpol(cloud, timestampList_fcast,12)
+csvfcastGHI = interpol(ghi, timestampList_fcast,12)
+csvfcastAPI = interpol(ghi_API,timestampList_fcast_API,36)
 
-with open("fcast.csv", "wb") as f:
+with open("fcastCLOUD.csv", "wb") as f:
 	writer = csv.writer(f)
-	writer.writerows(csvfcast)
+	writer.writerows(csvfcastCLOUD)
+
+with open("fcastGHI.csv", "wb") as f:
+	writer = csv.writer(f)
+	writer.writerows(csvfcastGHI)
 
 with open("fcastAPI.csv", "wb") as f:
 	writer = csv.writer(f)
