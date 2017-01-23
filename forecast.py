@@ -35,7 +35,37 @@ def forecast(date_from_DB):
 
 	ghi_API_interpol.extend([0]*23)
 
-	forecastPV = [beta * ghi for ghi in ghi_API_interpol]
+	#################################################################################################################################
+	interval = 12
+
+	db = sqlite3.connect(config.dbfilepath)
+	cur = db.cursor()
+
+	cur.execute("SELECT * FROM forecastLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
+	data = cur.fetchall()
+
+	cloud = list(zip(*data)[1])
+
+	db.close()
+
+	length = len(cloud)
+	cloud_interpol = list()
+	#cloud_interpol.extend([0]*12)
+	cloud_interpol.append(cloud[0])
+
+	for i in range(0,length-1):
+
+		z = i + 1
+
+		for j in range(1,interval):
+			y = cloud[i] + (cloud[z] - cloud[i]) / interval * j
+			cloud_interpol.append(y)
+
+		cloud_interpol.append(cloud[z])
+
+	cloud_interpol.extend([0]*11)
+	#################################################################################################################################
+	"""forecastPV = [beta * ghi for ghi in ghi_API_interpol]
 
 	# +++ Time correction table +++ #
 	time_correct = list()
@@ -55,9 +85,22 @@ def forecast(date_from_DB):
 	for i in range(0,len(forecastPV)):
 		forecastPV[i] = forecastPV[i] * time_correct[i]
 
+	"""
+	ghifactors=list()
+	ghicloudfactors=list()
+	import csv
+	with open('factors.csv', 'rb') as csvfile:
+		spamreader = csv.reader(csvfile, delimiter=',')
+		for row in spamreader:
+			ghifactors.append(row[0])
+			ghicloudfactors.append(row[1])
+
+	forecastPV = list()
+	forecastPV.extend(288*[0])
+
+	for i in range(0,len(forecastPV)):
+		forecastPV[i] = ghi_API_interpol[i] * float(ghifactors[i]) + ghi_API_interpol[i] * cloud_interpol[i] * float(ghicloudfactors[i])
 
 	return(forecastPV)
-
-
 
 
