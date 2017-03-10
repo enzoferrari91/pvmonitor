@@ -268,6 +268,7 @@ def showtimeseries():
 	date_from_DB = request.form['dateselect_from']
 	date_to_DB = request.form['dateselect_to']
 	temp, date_to_DB = getDates(date_to_DB)
+	fcast_pv=[]
 
 	try:
 		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB,mode="range")
@@ -278,9 +279,10 @@ def showtimeseries():
 		power_bez = []
 		power_einsp = []
 		power_pv = []
+		fcast_pv=[]
 		timestampList = []
 
-	return render_template("showtimeseries.html", power_bez=power_bez, power_einsp=power_einsp, power_pv=power_pv, timestampList=timestampList)
+	return render_template("showtimeseries.html", power_bez=power_bez, power_einsp=power_einsp, power_pv=power_pv, timestampList=timestampList, fcast_pv=fcast_pv)
 
 @app.route("/system_messages")
 def system_messages():
