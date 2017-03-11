@@ -1,11 +1,19 @@
-# Periodische Abfrage Daten
-*/15 * * * * sudo python Desktop/python/hoelzl/data-crawler.py > Desktop/python/hoelzl/output_data.txt
+# CRONTABS
+
+# Periodische Abfrage Daten alle 5 min
+*/5 * * * * sudo python /home/pi/pvmonitor/data-crawler.py > /home/pi/pvmonitor-logs/log_data.txt
+
+# Fasse jeden Tag am Ende um 23:56 Energiemengen zusammen
+56 23 * * * sudo python /home/pi/pvmonitor/daylog.py > /home/pi/pvmonitor-logs/log_daylog.txt
+
+# Lade 1h - GFS Forecasts um 05:01
+1 5 * * * sudo python /home/pi/pvmonitor/dods_GFS1h.py > /home/pi/pvmonitor-logs/log_dods_GFS.txt
+
+# Lade 1h - GFS Forecasts um 05:06
+6 5 * * * sudo python /home/pi/pvmonitor/planetosAPI.py > /home/pi/pvmonitor-logs/logs_planetos.txt
 
 # Reboot jeden Tag um 09:01 und 18:01
-1 9,18 * * * Desktop/python/hoelzl/reboot.sh > Desktop/python/hoelzl/output_reboot.txt
+1 9,18 * * * /home/pi/pvmonitor/reboot.sh
 
 # Nach Reboot starte Webserver Flask um 09:06 und 18:06
-6 9,18 * * * Desktop/python/hoelzl/restart.sh > Desktop/python/hoelzl/output_restart.txt
-
-# Fasse jeden Tag am Ende 23:56 Energiemengen zusammen
-56 23 * * * sudo python Desktop/python/hoelzl/daylog.py
+6 9,18 * * * /home/pi/pvmonitor/restart.sh
