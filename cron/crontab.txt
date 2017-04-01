@@ -1,19 +1,21 @@
 # CRONTABS
 
-# Periodische Abfrage Daten alle 5 min
-*/5 * * * * sudo python /home/pi/pvmonitor/data-crawler.py > /home/pi/pvmonitor-logs/log_data.txt
+# Periodische Abfrage Daten
+*/5 * * * * sudo python pvmonitor/data-crawler.py > pvmonitor-logs/log_data.txt
 
-# Fasse jeden Tag am Ende um 23:56 Energiemengen zusammen
-56 23 * * * sudo python /home/pi/pvmonitor/daylog.py > /home/pi/pvmonitor-logs/log_daylog.txt
+# Restart DP-Agent jeden Tag um 08:01 und 18:01
+1 8,18 * * * pvmonitor/restartDP.sh > pvmonitor-logs/log_dataplicity.txt
 
-# Lade 1h - GFS Forecasts um 05:01
-1 5 * * * sudo python /home/pi/pvmonitor/dods_GFS1h.py > /home/pi/pvmonitor-logs/log_dods_GFS.txt
+# Reboot jeden 5. Tag um 09:01
+1 9 */5 * * pvmonitor/reboot.sh > pvmonitor-logs/log_reboot.txt
 
-# Lade 1h - GFS Forecasts um 05:06
-6 5 * * * sudo python /home/pi/pvmonitor/planetosAPI.py > /home/pi/pvmonitor-logs/logs_planetos.txt
+# Nach Reboot starte Webserver Flask um 09:06
+6 9 */5 * * pvmonitor/restart.sh > pvmonitor-logs/log_restart.txt
 
-# Reboot jeden Tag um 09:01 und 18:01
-1 9,18 * * * /home/pi/pvmonitor/reboot.sh
+# Fasse jeden Tag am Ende 23:56 Energiemengen zusammen
+56 23 * * * sudo python pvmonitor/daylog.py > pvmonitor-logs/log_daylog.txt
 
-# Nach Reboot starte Webserver Flask um 09:06 und 18:06
-6 9,18 * * * /home/pi/pvmonitor/restart.sh
+# Lade GFS-Forecasts 18Z Tag N für heute Tag N+1 um 04:01
+1 4 * * * sudo python pvmonitor/dods_GFS1h.py > pvmonitor-logs/log_dods_GFS.txt
+
+1 5 * * * sudo python pvmonitor/planetosAPI.py > pvmonitor-logs/logs_planetos.txt
