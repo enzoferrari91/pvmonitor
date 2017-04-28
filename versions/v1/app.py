@@ -50,10 +50,17 @@ def average(data):
 	return(data)		
 
 # Get power data from SQLite3
-def selectPowerDB(date_from_DB, date_to_DB):
+def selectPowerDB(date_from_DB, date_to_DB="", mode="day"):
 	cur = g.db.cursor()
-	cur.execute("SELECT * FROM powerLog WHERE datetime >= ? and datetime < ?", (date_from_DB, date_to_DB))
-	data = cur.fetchall()
+
+	# Default mode "day"
+	if mode =="day":
+		cur.execute("SELECT * FROM powerLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
+		data = cur.fetchall()
+	# Mode "daterange"
+	else:
+		cur.execute("SELECT * FROM powerLog WHERE datetime >= ? and datetime < ?", (date_from_DB, date_to_DB))
+		data = cur.fetchall()
 
 	# Create lists
 	power_bez = list(zip(*data)[1])
@@ -99,9 +106,75 @@ def selectEnergyDB(year="0", mode="sum"):
 		timestampList = [extractdate(x) for x in timestampList]
 		return(list_energy_bez, list_energy_einsp, list_energy_pv, timestampList)
 
+
+
 @app.route("/")
-def index():
-	return render_template("index.html")
+@app.route("/<dateURL>")
+def index(dateURL=getDateToday()):
+
+ 	# get date from URL
+	try:
+		dateDB = dateURL
+	
+	except:
+		dateDB = getDateToday()
+
+	dateYesterday, dateTomorrow = getDates(dateDB)
+
+	try:
+		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
+
+		power_bez = [0 if x is None else x for x in power_bez]
+		power_einsp = [0 if x is None else x for x in power_einsp]
+
+		actual_power_bez = power_bez[-1]
+		actual_power_einsp = power_einsp[-1]
+		actual_power_pv = power_pv[-1] # last entry in list
+
+		today_energy_bez = round( sum([(i/12)/1000 for i in power_bez]), 1 ) # 5 minute intervall = factor 12
+		today_energy_einsp = round( sum([(i/12)/1000 for i in power_einsp]), 1 ) # 5 minute intervall = factor 12
+		today_energy_pv = round( sum([(i/12)/1000 for i in power_pv]), 1 ) # 5 minute intervall = factor 12
+
+		power_bez = average(power_bez)
+		power_einsp = average(power_einsp)
+
+		power_bez.extend((288-len(power_bez))*[0])
+		power_einsp.extend((288-len(power_einsp))*[0])
+		power_pv.extend((288-len(power_pv))*[0])
+		timestampList.extend((288-len(timestampList))*[""])
+
+	except:
+		power_bez = []
+		power_einsp = []
+		power_pv = []
+		timestampList = []
+		actual_power_bez = 0
+		actual_power_einsp = 0
+		actual_power_pv = 0
+		today_energy_bez = 0
+		today_energy_einsp = 0
+		today_energy_pv = 0
+	
+
+	# FORECAST MODUL #
+	try:
+		fcast_pv = forecast.forecast(dateDB)
+	except:
+		fcast_pv = []
+
+	return render_template("index.html", 
+		power_bez=power_bez, 
+		actual_power_bez=actual_power_bez, 
+		today_energy_bez=today_energy_bez,
+		power_einsp=power_einsp, 
+		actual_power_einsp=actual_power_einsp, 
+		today_energy_einsp=today_energy_einsp,
+		power_pv=power_pv, 
+		actual_power_pv=actual_power_pv, 
+		today_energy_pv=today_energy_pv, 
+		timestampList=timestampList, dateDB=dateDB,
+		dateYesterday=dateYesterday, dateTomorrow=dateTomorrow,
+		fcast_pv=fcast_pv)
 
 @app.route("/energystats")
 @app.route("/energystats/<year>")
@@ -168,6 +241,44 @@ def energystats(year="2017"):
 							list_ev_quote_month=list_ev_quote_month,
 							months=months)
 
+@app.route("/tables")
+def tables():
+	return render_template("tables.html")
+
+@app.route("/timeseries")
+def timeseries():
+	return render_template("timeseries.html")
+
+@app.route("/showtables", methods=['POST'])
+def showtables():
+	dateDB = request.form['dateselect']
+	power_bez, power_einsp, power_pv, timestampList = selectPowerDB(dateDB)
+
+	max_power_pv = max(power_pv)
+	power_pv_tablelist = zip(power_pv,timestampList)
+	return render_template("showtables.html", power_pv_tablelist=power_pv_tablelist, max_power_pv=max_power_pv)
+
+@app.route("/showtimeseries", methods=['POST'])
+def showtimeseries():
+	date_from_DB = request.form['dateselect_from']
+	date_to_DB = request.form['dateselect_to']
+	temp, date_to_DB = getDates(date_to_DB)
+	fcast_pv=[]
+
+	try:
+		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB,mode="range")
+		power_bez = average(power_bez)
+		power_einsp = average(power_einsp)
+		
+	except:
+		power_bez = []
+		power_einsp = []
+		power_pv = []
+		fcast_pv=[]
+		timestampList = []
+
+	return render_template("showtimeseries.html", power_bez=power_bez, power_einsp=power_einsp, power_pv=power_pv, timestampList=timestampList, fcast_pv=fcast_pv)
+
 @app.route("/system_messages")
 def system_messages():
 	return render_template("system_messages.html")
@@ -217,59 +328,35 @@ def alarmprotokoll():
 	f.close()
 	return(s)
 
+
+
+@app.route("/jsonTest")
+def jsonTest():
+
+	return render_template("jsonTestChart.html")
+
+
 @app.route("/_get_data")
 def showtimeseriesJSON():
     date_from_DB = request.args.get('dateselect_from')
     date_to_DB = request.args.get('dateselect_to')
 
     temp, date_to_DB = getDates(date_to_DB)
+    fcast_pv=[]
 
     try:
-    	power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB)
-    	power_bez = [0 if x is None else x for x in power_bez]
-    	power_einsp = [0 if x is None else x for x in power_einsp]
-
-    	actual_power_bez = power_bez[-1]
-    	actual_power_einsp = power_einsp[-1]
-    	actual_power_pv = power_pv[-1] # last entry in list
-
-    	today_energy_bez = round( sum([(i/12)/1000 for i in power_bez]), 1 ) # 5 minute intervall = factor 12
-    	today_energy_einsp = round( sum([(i/12)/1000 for i in power_einsp]), 1 ) # 5 minute intervall = factor 12
-    	today_energy_pv = round( sum([(i/12)/1000 for i in power_pv]), 1 ) # 5 minute intervall = factor 12
+    	power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB,mode="range")
     	power_bez = average(power_bez)
     	power_einsp = average(power_einsp)
-
-    	power_bez.extend((288-len(power_bez))*[0])
-    	power_einsp.extend((288-len(power_einsp))*[0])
-    	power_pv.extend((288-len(power_pv))*[0])
-    	timestampList.extend((288-len(timestampList))*[""])
-
     except:
     	power_bez = []
     	power_einsp = []
     	power_pv = []
-    	timestampList = []
-    	actual_power_bez = 0
-    	actual_power_einsp = 0
-    	actual_power_pv = 0
-    	today_energy_bez = 0
-    	today_energy_einsp = 0
-    	today_energy_pv = 0
-
-    # FORECAST MODUL #
-    try:
-    	fcast_pv = forecast.forecast(date_from_DB)
-    except:
     	fcast_pv = []
+    	timestampList = []
 
-    return jsonify(power_bez=power_bez, actual_power_bez=actual_power_bez, today_energy_bez=today_energy_bez, power_einsp=power_einsp, 
-		actual_power_einsp=actual_power_einsp, 
-		today_energy_einsp=today_energy_einsp,
-		power_pv=power_pv, 
-		actual_power_pv=actual_power_pv, 
-		today_energy_pv=today_energy_pv, 
-		timestampList=timestampList,
-		fcast_pv=fcast_pv)	
+    return jsonify(power_pv=power_pv,power_einsp=power_einsp,power_bez=power_bez,timestampList=timestampList)
+
     
 @app.before_request
 def before_request():

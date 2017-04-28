@@ -79,7 +79,12 @@
                             <input type="submit" id="calculate"/>
                             <br>
 
-                            <span id="result">?</span>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">
+                                    <span id="result">?</span> W
+                                </div>
+                                <div>Aktuelle PV-Leistung</div>
+                            </div>
 
                         </div>
                         <!-- /.panel-body -->
@@ -95,18 +100,14 @@
     <!-- /#wrapper -->
 
 
-    <!-- Variable Loader Script -->
-    <script>
-        var power_pv = {{ power_pv|safe }}; //globale Variablen
-        var timestampList = {{ timestampList|safe }}
-
-    </script>
-
     <!-- jQuery + jQueryUI -->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+
+    <!-- Variable Loader Script -->
     <script>
+
         $( function() {
             $( "#datepicker1" ).datepicker();
             $( "#datepicker1" ).datepicker( "option", "dateFormat", "yy-mm-dd");

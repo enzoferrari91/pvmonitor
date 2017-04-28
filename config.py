@@ -20,31 +20,3 @@ else:
 # Zwettl
 lat = 48.50
 lon = 15.25
-
-
-
-# TEST SET - ERASE SOON...
-##########################################################
-activity  = {
-    "xData": ["2016-11-01", "2016-11-02", "2016-11-03"],
-    "datasets": [{
-        "name": "Speed",
-        "data": [20,12.524,11.441],
-        "unit": "km/h",
-        "type": "line",
-        "valueDecimals": 1
-    }, {
-        "name": "Elevation",
-        "data": [26.857,27,27.111],
-        "unit": "m",
-        "type": "area",
-        "valueDecimals": 0
-    }, {
-        "name": "Heart rate",
-        "data": [101,0,103],
-        "unit": "bpm",
-        "type": "area",
-        "valueDecimals": 0
-    }]
-}
-##########################################################

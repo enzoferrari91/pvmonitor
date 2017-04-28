@@ -42,10 +42,16 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="/"><i class="fa fa-home fa-fw"></i> Startseite</a>
+                            <a href="/"><i class="fa fa-dashboard fa-fw"></i> Startseite</a>
                         </li>
                         <li>
                             <a href="/energystats"><i class="fa fa-bar-chart-o fa-fw"></i> Statistik</a>
+                        </li>
+                        <li>
+                            <a href="/timeseries"><i class="fa fa-home fa-fw"></i> Anzeige Zeitserien</a>
+                        </li>
+                        <li>
+                            <a href="/tables"><i class="fa fa-table fa-fw"></i> Anzeige Tabellen</a>
                         </li>
                         <li>
                             <a href="/system_messages"><i class="fa fa-wrench fa-fw"></i> System</a>
@@ -77,9 +83,7 @@
                                     <i class="fa fa-flash fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">
-                                        <span id="actual_power_pv">?</span> W
-                                    </div>
+                                    <div class="huge">{{ actual_power_pv }} W</div>
                                     <div>Aktuelle PV-Leistung</div>
                                 </div>
                             </div>
@@ -101,9 +105,7 @@
                                     <i class="fa fa-home fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">
-                                        <span id="today_energy_pv">?</span> kWh
-                                    </div>
+                                    <div class="huge">{{ today_energy_pv }} kWh</div>
                                     <div>Erzeugter PV-Strom</div>
                                 </div>
                             </div>
@@ -125,9 +127,7 @@
                                     <i class="fa fa-arrow-up fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">
-                                        <span id="today_energy_einsp">?</span> kWh
-                                    </div>
+                                    <div class="huge">{{ today_energy_einsp }} kWh</div>
                                     <div>Rückspeisung Netz</div>
                                 </div>
                             </div>
@@ -149,8 +149,7 @@
                                     <i class="fa fa-arrow-down fa-5x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                    <div class="huge">
-                                        <span id="today_energy_bez">?</span> kWh</div>
+                                    <div class="huge">{{ today_energy_bez }} kWh</div>
                                     <div>Bezug Netz</div>
                                 </div>
                             </div>
@@ -175,10 +174,9 @@
 
                             <span class="pull-right">
 
-                                <input type="text" id="datepicker1" name="dateselect_from" style="color:black"/>
-                                <input type="text" id="datepicker2" name="dateselect_to"   style="color:black"/>
-                                <input type="button" id="yesterday" value="<<<" style="color:black"/>
-                                <input type="button" id="tomorrow"  value=">>>" style="color:black"/>
+                                <a href="{{ url_for('.index',dateURL=dateYesterday) }}" class="btn btn-inverse"><i class="fa fa-angle-left fa-2x"></i></a>
+                                {{ dateDB }}
+                                <a href="{{ url_for('.index',dateURL=dateTomorrow) }}" class="btn btn-inverse"><i class="fa fa-angle-right fa-2x"></i></a>
 
                             </span>
 
@@ -200,205 +198,31 @@
     <!-- /#wrapper -->
 
 
+    <!-- Variable Loader Script -->
+    <script>
+        var power_bez = {{ power_bez|safe }}; //globale Variablen
+        var power_einsp = {{ power_einsp|safe }}; //globale Variablen
+        var power_pv = {{ power_pv|safe }}; //globale Variablen
+        var timestampList = {{ timestampList|safe }}
+
+        var fcast_pv = {{ fcast_pv|safe }}
+
+    </script>
+
     <!-- jQuery + jQueryUI -->
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <!-- Highcharts -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-
-    <script>
-        $( function() {
-            $( "#datepicker1" ).datepicker();
-            $( "#datepicker1" ).datepicker( "option", "dateFormat", "yy-mm-dd");
-            $( "#datepicker2" ).datepicker();
-            $( "#datepicker2" ).datepicker( "option", "dateFormat", "yy-mm-dd");
-        });
-    </script>
-
-    <script>
-        $(function () {
-
-        function date2str(date) {
-            var dd = date.getDate();
-            var mm = date.getMonth()+1; //January is 0!
-            var yyyy = date.getFullYear();
-
-            if(dd<10) {
-                dd='0'+dd
-            } 
-
-            if(mm<10) {
-                mm='0'+mm
-            } 
-
-            today = yyyy + '-' + mm + '-' + dd;
-            return (today);
-        }
-
-        function datechange(date, count) {
-            var date = date.split('-').join('-');
-            var newdate =  new Date(date);
-            newdate.setDate(newdate.getDate() + count);
-
-            return(date2str(newdate));
-        }
-
-        function loadjson()
-        {
-            $.getJSON('/_get_data', {
-                dateselect_from: $('input[name="dateselect_from"]').val(),
-                dateselect_to: $('input[name="dateselect_to"]').val()
-                }, function(data) {
-
-                    chart.series[0].setData(data.power_pv);
-                    chart.series[1].setData(data.power_bez);
-                    chart.series[2].setData(data.power_einsp);
-                    chart.series[3].setData(data.fcast_pv);
-                    chart.xAxis[0].setCategories(data.timestampList);
-
-                    $("#actual_power_pv").text(data.actual_power_pv);
-                    $("#today_energy_pv").text(data.today_energy_pv);
-                    $("#today_energy_einsp").text(data.today_energy_einsp);
-                    $("#today_energy_bez").text(data.today_energy_bez);
-
-                });
-        }
-
-        var today = date2str(new Date());
-        var chart;
-
-        $('input[name="dateselect_from"]').val(today);
-        $('input[name="dateselect_to"]').val(today);
-
-        chart = Highcharts.chart('container1', {
-            
-            colors: ["#2b908f", "#90ee7e"],
-            chart: {
-                backgroundColor: '#3e3e40',
-            },
-            title: {
-                text: '',
-                style: {
-                    display: 'none'
-                }
-            },
-            xAxis: {
-                categories: [],
-                gridLineColor: '#707073',
-                labels: {
-                    style: {
-                        color: '#ddd',
-                        fontSize: '14px'
-                    }
-                },
-                lineColor: '#707073',
-                minorGridLineColor: '#505053',
-                tickColor: '#707073',
-            },
-            yAxis: {
-                title: {
-                    text: 'Leistung [ W ]',
-                    style: {
-                        color: '#ddd',
-                        fontSize: '14px'
-                    }
-                },
-                gridLineColor: '#707073',
-                labels: {
-                    style: {
-                        color: '#ddd'
-                    }
-                },
-                lineColor: '#707073',
-                minorGridLineColor: '#505053',
-                tickColor: '#707073',
-                tickWidth: 1,
-
-                max: 5000,
-                min:0
-            },
-            
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0,
-                
-                itemStyle: {
-                    color: '#ddd'
-                },
-                itemHoverStyle: {
-                    color: '#fff'
-                },
-                itemHiddenStyle: {
-                    color: '#ddd'
-                }           
-            },
-            
-            series: 
-            [
-                {
-                    name: 'PV-Leistung',
-                    data: []
-                },
-                {
-                    name: 'Netz-Bezug',
-                    data: [],
-                    color: '#e74c3c'
-                },
-                {
-                    name: 'Netz-Einspeisung',
-                    data: [],
-                    color: '#3498db'
-                },
-                {
-                    name: 'PV-Forecast',
-                    data: [],
-                }
-            ]
-        });
-
-        $('input#calculate').bind('click', function() {
-
-            loadjson();
-            return false;
-        });
-
-        $('input#yesterday').bind('click', function() {
-
-            var day = $('input[name="dateselect_from"]').val();
-            var yesterday = datechange(day,-1);
-
-            $('input[name="dateselect_from"]').val(yesterday);
-            $('input[name="dateselect_to"]').val(yesterday);
-            loadjson();
-            return false; 
-        });
-
-        $('input#tomorrow').bind('click', function() {
-
-            var day = $('input[name="dateselect_from"]').val();
-            var tomorrow = datechange(day,1);
-
-            $('input[name="dateselect_from"]').val(tomorrow);
-            $('input[name="dateselect_to"]').val(tomorrow);
-            loadjson();
-            return false; 
-        });
-
-    });
-
-    </script>
-
-
 
     <!-- Bootstrap Core JavaScript -->
     <script src={{ url_for('static', filename='js/bootstrap.min.js') }}></script>
     
     <!-- Metis Menu Plugin JavaScript -->
     <script src={{ url_for('static', filename='js/metisMenu.min.js') }}></script>
+
+    <!-- Highcharts -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src={{ url_for('static', filename='js/highcharts-data.js') }}></script>
 
     <!-- Custom Theme JavaScript -->
     <script type="text/js" src={{ url_for('static', filename='js/sb-admin-2.js') }}></script>
