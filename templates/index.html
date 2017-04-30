@@ -177,6 +177,7 @@
 
                                 <input type="text" id="datepicker1" name="dateselect_from" style="color:black"/>
                                 <input type="text" id="datepicker2" name="dateselect_to"   style="color:black"/>
+                                <input type="button" id="select" value="OK" style="color:black"/>
                                 <input type="button" id="yesterday" value="<<<" style="color:black"/>
                                 <input type="button" id="tomorrow"  value=">>>" style="color:black"/>
 
@@ -360,7 +361,9 @@
             ]
         });
 
-        $('input#calculate').bind('click', function() {
+        loadjson();
+
+        $('input#select').bind('click', function() {
 
             loadjson();
             return false;
