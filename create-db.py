@@ -26,6 +26,11 @@ try:
 except:
 	print("Table 'forecastLogAPI' already exists.")
 
+try:
+	cur.execute("CREATE TABLE solarLog(datetime DATETIME NOT NULL, solar FLOAT(7,2));")
+except:
+	print("Table 'solarLog' already exists.")
+
 db.close()
 
 print("Database sucessfully created!")
