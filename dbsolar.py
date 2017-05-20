@@ -23,7 +23,14 @@ data_list = zip(*out)
 
 db = sqlite3.connect(config.dbfilepath)
 cur = db.cursor()
+count = 1
 for row in data_list:
+
+	count = count + 1
+	if count == 288:
+		count = 1
+		print row
+		
 	sql_insert = ("""INSERT INTO solarLog (datetime, solar) VALUES (?,?)""",(row[0],row[1]))
 	cur.execute(*sql_insert)
 	db.commit()
