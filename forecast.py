@@ -5,8 +5,9 @@ def forecast(date_from_DB):
 	interval = 36
 
 	# +++ Forecast coefficients +++ #
-	beta = 5.2
-
+	beta3 = -8.2e-6
+	beta2 = 0.013
+	beta1 = -0.09
 
 	db = sqlite3.connect(config.dbfilepath)
 	cur = db.cursor()
@@ -16,11 +17,12 @@ def forecast(date_from_DB):
 
 	ghi_API = list(zip(*data)[1])
 
+
 	db.close()
 
 	length = len(ghi_API)
 	ghi_API_interpol = list()
-	ghi_API_interpol.extend([0]*12)
+	ghi_API_interpol.extend([0]*24)
 	ghi_API_interpol.append(ghi_API[0])
 
 	for i in range(0,length-1):
@@ -35,72 +37,58 @@ def forecast(date_from_DB):
 
 	ghi_API_interpol.extend([0]*23)
 
+
 	#################################################################################################################################
-	interval = 12
+	#interval = 12
 
-	db = sqlite3.connect(config.dbfilepath)
-	cur = db.cursor()
+	#db = sqlite3.connect(config.dbfilepath)
+	#cur = db.cursor()
 
-	cur.execute("SELECT * FROM forecastLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
-	data = cur.fetchall()
+	#cur.execute("SELECT * FROM forecastLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
+	#data = cur.fetchall()
 
-	cloud = list(zip(*data)[1])
+	#                       1 for cloud / 5 for ghi
+	#cloud = list(zip(*data)[5])
+	#cc = list(zip(*data)[1])
+	#cc_mean = sum(cc) / len(cc)
 
-	db.close()
+	#db.close()
 
-	length = len(cloud)
-	cloud_interpol = list()
+	#length = len(cloud)
+	#cloud_interpol = list()
 	#cloud_interpol.extend([0]*12)
-	cloud_interpol.append(cloud[0])
+	#cloud_interpol.append(cloud[0])
 
-	for i in range(0,length-1):
+	#for i in range(0,length-1):
 
-		z = i + 1
+	#	z = i + 1
 
-		for j in range(1,interval):
-			y = cloud[i] + (cloud[z] - cloud[i]) / interval * j
-			cloud_interpol.append(y)
+	#	for j in range(1,interval):
+	#		y = cloud[i] + (cloud[z] - cloud[i]) / interval * j
+	#		cloud_interpol.append(y)
 
-		cloud_interpol.append(cloud[z])
+	#	cloud_interpol.append(cloud[z])
 
-	cloud_interpol.extend([0]*11)
+	#cloud_interpol = cloud_interpol[12:]
+	#cloud_interpol.append([0]*23)
+
 	#################################################################################################################################
-	"""forecastPV = [beta * ghi for ghi in ghi_API_interpol]
 
-	# +++ Time correction table +++ #
-	time_correct = list()
-	time_correct.extend([0]*12*7) # 0-7
-	time_correct.extend([1]*12*1) # 7-8
-	time_correct.extend([1.2]*12*1) # 8-9
-	time_correct.extend([1.5]*12*1) # 9-10
-	time_correct.extend([2]*12*1) # 10-11
-	time_correct.extend([2.2]*12*1) # 11-12
-	time_correct.extend([2.1]*12*1) # 12-13
-	time_correct.extend([2.2]*12*1) # 13-14
-	time_correct.extend([2.5]*12*1) # 14-15
-	time_correct.extend([2]*12*1) # 15-16
-	time_correct.extend([1]*12*3) # 16-19
-	time_correct.extend([0]*12*5) # 19-24
-
-	for i in range(0,len(forecastPV)):
-		forecastPV[i] = forecastPV[i] * time_correct[i]
-
-	"""
-	ghifactors=list()
-	ghicloudfactors=list()
-	import csv
-	with open('factors.csv', 'rb') as csvfile:
-		spamreader = csv.reader(csvfile, delimiter=',')
-		for row in spamreader:
-			ghifactors.append(row[0])
-			ghicloudfactors.append(row[1])
-
-	forecastPV = list()
-	forecastPV.extend(288*[0])
-
-	for i in range(0,len(forecastPV)):
-		forecastPV[i] = ghi_API_interpol[i] * float(ghifactors[i]) + ghi_API_interpol[i] * cloud_interpol[i] * float(ghicloudfactors[i])
+	forecastPV = [(beta3*(x**3) + beta2*(x**2) + beta1*x) for x in ghi_API_interpol]
 
 	return(forecastPV)
 
+
+#def forecastxxx(date_from_DB):
+#	db = sqlite3.connect(config.dbfilepath)
+#	cur = db.cursor()
+#
+#	cur.execute("SELECT * FROM solarLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
+#	data = cur.fetchall()
+#
+#	solar = list(zip(*data)[1])
+#	solar = [x*100 for x in solar]
+#	addsolar = [0]*12
+#	solar = addsolar + solar
+#	return(solar)
 

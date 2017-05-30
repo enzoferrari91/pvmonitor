@@ -74,7 +74,7 @@ def interpol(tseries, timestamps, interval):
 	#return(csv)
 	return(output)
 
-power_pv, timestampList, cloud, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API = selectDB("2017-01-03 01:00","2017-03-02 22:05")
+power_pv, timestampList, cloud, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API = selectDB("2017-01-03 01:00","2017-18-05 22:05")
 
 csvfcastCLOUD = interpol(cloud, timestampList_fcast,12)
 csvfcastGHI = interpol(ghi, timestampList_fcast,12)

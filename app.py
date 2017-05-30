@@ -27,16 +27,13 @@ def getDateToday():
 	dateToday = time.strftime("%Y-%m-%d")
 	return(dateToday)
 
-# Get yesterday's and tommorow's date
+# Get tommorow's date
 def getDates(dateDB):
 	dateToday = datetime.strptime(dateDB,"%Y-%m-%d") # Type 'Datetime'
-	dateYesterday = dateToday - timedelta(days=1) 	 # Type 'Datetime'
 	dateTomorrow = dateToday + timedelta(days=1) 	 # Type 'Datetime'
-
-	dateYesterday = datetime.strftime(dateYesterday,"%Y-%m-%d") # Type 'String'
 	dateTomorrow = datetime.strftime(dateTomorrow,"%Y-%m-%d")	# Type 'String'
 
-	return(dateYesterday, dateTomorrow)
+	return(dateTomorrow)
 
 def average(data):
 	l = len(data)
@@ -198,15 +195,17 @@ def check_missing_data():
 		datelist.append(datetime.strftime(newdate,"%Y-%m-%d"))
 	
 	for d in datelist:
-		power_bez, power_einsp, power_pv, timestampList = selectPowerDB(d)
-
-		if not(len(power_bez) == 288 & len(power_einsp) == 288 & len(power_pv) == 288):
-			missing = missing + d + "; "
-
+		d_next = getDates(d)
+		try:
+			power_bez, power_einsp, power_pv, timestampList = selectPowerDB(d,d_next)
+			if not(len(power_bez) == 288 & len(power_einsp) == 288 & len(power_pv) == 288):
+				missing = missing + d + "<br>"
+		except:
+			missing = missing + d + "<br>"
 	if missing == "":
 		output = "All datasets OK - No missing data"
 	else:
-		output = "Missing data: " + missing
+		output = "Missing data:<br>" + missing
 
 	return(output)
 
@@ -222,7 +221,7 @@ def showtimeseriesJSON():
     date_from_DB = request.args.get('dateselect_from')
     date_to_DB = request.args.get('dateselect_to')
 
-    temp, date_to_DB = getDates(date_to_DB)
+    date_to_DB = getDates(date_to_DB)
 
     try:
     	power_bez, power_einsp, power_pv, timestampList = selectPowerDB(date_from_DB,date_to_DB)
