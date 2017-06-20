@@ -23,7 +23,15 @@ def selectDB(date_from_DB, date_to_DB):
 	cur.execute("SELECT * FROM forecastLog WHERE datetime >= ? and datetime <= ?", (date_from_DB, date_to_DB))
 	data = cur.fetchall()
 
+	# data[0]...timestamps
+	# data[1]...cloud cover
+	# data[2]...temperature
+	# data[3]...u-wind
+	# data[4]...v-wind
+	# data[5]...ghi
+
 	cloud = list(zip(*data))[1]
+	temperature = list(zip(*data))[2]
 	ghi = list(zip(*data)[5])
 	timestampList_fcast = list(zip(*data)[0])
 	timestampList_fcast = [str(x) for x in timestampList_fcast]
@@ -39,7 +47,7 @@ def selectDB(date_from_DB, date_to_DB):
 	db.close()
 
 	# Return the lists
-	return (power_pv, timestampList, cloud, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API)
+	return (power_pv, timestampList, cloud, temperature, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API)
 
 
 def interpol(tseries, timestamps, interval):
@@ -74,26 +82,16 @@ def interpol(tseries, timestamps, interval):
 	#return(csv)
 	return(output)
 
-power_pv, timestampList, cloud, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API = selectDB("2017-01-03 01:00","2017-18-05 22:05")
+power_pv, timestampList, cloud, temperature, ghi, timestampList_fcast, ghi_API, timestampList_fcast_API = selectDB("2017-01-03 01:00","2017-06-02 22:05")
+
+print "start interpol"
 
 csvfcastCLOUD = interpol(cloud, timestampList_fcast,12)
+csvfcastTEMPERATURE = interpol(temperature, timestampList_fcast,12)
 csvfcastGHI = interpol(ghi, timestampList_fcast,12)
 csvfcastAPI = interpol(ghi_API,timestampList_fcast_API,36)
 
 
-"""
-with open("fcastCLOUD.csv", "wb") as f:
-	writer = csv.writer(f)
-	writer.writerows(csvfcastCLOUD)
-
-#with open("fcastGHI.csv", "wb") as f:
-#	writer = csv.writer(f)
-#	writer.writerows(csvfcastGHI)
-
-with open("fcastAPI.csv", "wb") as f:
-	writer = csv.writer(f)
-	writer.writerows(csvfcastAPI)
-"""
 outpv = list()
 
 timestampList = [x[:16] for x in timestampList]
@@ -102,13 +100,8 @@ outpv.append(timestampList)
 outpv.append(power_pv)
 csvpv = zip(*outpv)
 
-#print outpv
+print "start sync"
 
-"""
-with open("pv.csv", "wb") as f:
-    writer = csv.writer(f)
-    writer.writerows(csvpv)
-"""
 
 def sync_lists(list_one, list_two,numb):
 	temp_list_one = list()
@@ -116,6 +109,7 @@ def sync_lists(list_one, list_two,numb):
 
 	temp_list_two_two = list()
 	temp_list_two_three = list()
+	temp_list_two_four = list()
 
 	timelist = list()
 	output = list()
@@ -149,6 +143,11 @@ def sync_lists(list_one, list_two,numb):
 				temp_list_two_two.append(list_two[2][y])
 				temp_list_two_three.append(list_two[3][y])
 
+			if numb == 4:
+				temp_list_two_two.append(list_two[2][y])
+				temp_list_two_three.append(list_two[3][y])
+				temp_list_two_four.append(list_two[4][y])
+
 			y = y + 1
 
 		if y == ll:
@@ -163,14 +162,23 @@ def sync_lists(list_one, list_two,numb):
 	if numb == 3:
 		output.append(temp_list_two_two)
 		output.append(temp_list_two_three)
+	if numb == 4:
+		output.append(temp_list_two_two)
+		output.append(temp_list_two_three)
+		output.append(temp_list_two_four)
 
 	return(output)
 
+print "1"
 output_first = sync_lists(csvfcastCLOUD,outpv,1)
-output_second = sync_lists(csvfcastGHI,output_first,2)
-output_third = sync_lists(csvfcastAPI,output_second,3)
+print "2"
+output_second = sync_lists(csvfcastTEMPERATURE,output_first,2)
+print "3"
+output_third = sync_lists(csvfcastGHI,output_second,3)
+print "4"
+output_fourth = sync_lists(csvfcastAPI,output_third,4)
 
-csvlist = zip(*output_third)
+csvlist = zip(*output_fourth)
 
 with open("pv.csv", "wb") as f:
     writer = csv.writer(f)
