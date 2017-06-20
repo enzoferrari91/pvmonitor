@@ -35,7 +35,7 @@ def forecast(date_from_DB):
 
 		ghi_API_interpol.append(ghi_API[z])
 
-	ghi_API_interpol.extend([0]*23)
+	ghi_API_interpol.extend([0]*11)
 
 
 	#################################################################################################################################
