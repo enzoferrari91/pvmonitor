@@ -1,6 +1,27 @@
 import sqlite3
 import config
 
+def interpol_gfs(data,interval):
+	length = len(data)
+	data_interpol = list()
+	#data_interpol.extend([0]*24)
+	data_interpol.append(data[0])
+
+	for i in range(0,length-1):
+
+		z = i + 1
+
+		for j in range(1,interval):
+			y = data[i] + (data[z] - data[i]) / interval * j
+			data_interpol.append(y)
+
+		data_interpol.append(data[z])
+
+	data_interpol = data_interpol[12:]
+	#data_interpol.extend([0]*11)
+	return(data_interpol)
+
+
 def forecast(date_from_DB):
 	interval = 36
 
@@ -39,56 +60,34 @@ def forecast(date_from_DB):
 
 
 	#################################################################################################################################
-	#interval = 12
+	interval = 12
 
-	#db = sqlite3.connect(config.dbfilepath)
-	#cur = db.cursor()
+	db = sqlite3.connect(config.dbfilepath)
+	cur = db.cursor()
 
-	#cur.execute("SELECT * FROM forecastLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
-	#data = cur.fetchall()
+	cur.execute("SELECT * FROM forecastLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
+	data = cur.fetchall()
 
-	#                       1 for cloud / 5 for ghi
-	#cloud = list(zip(*data)[5])
-	#cc = list(zip(*data)[1])
-	#cc_mean = sum(cc) / len(cc)
+	# 1 for cloud / 5 for ghi
+	cloud = list(zip(*data)[1])
+	temp = list(zip(*data)[2])
+	temp = [x-273.15 for x in temp]
 
-	#db.close()
+	ghi = list(zip(*data)[5])
 
-	#length = len(cloud)
-	#cloud_interpol = list()
-	#cloud_interpol.extend([0]*12)
-	#cloud_interpol.append(cloud[0])
+	db.close()
 
-	#for i in range(0,length-1):
-
-	#	z = i + 1
-
-	#	for j in range(1,interval):
-	#		y = cloud[i] + (cloud[z] - cloud[i]) / interval * j
-	#		cloud_interpol.append(y)
-
-	#	cloud_interpol.append(cloud[z])
-
-	#cloud_interpol = cloud_interpol[12:]
-	#cloud_interpol.append([0]*23)
+	cloud_interpol = interpol_gfs(cloud,12)
+	temp_interpol = interpol_gfs(temp,12)
+	ghi_interpol = interpol_gfs(ghi,12)
 
 	#################################################################################################################################
 
 	forecastPV = [(beta3*(x**3) + beta2*(x**2) + beta1*x) for x in ghi_API_interpol]
 
-	return(forecastPV)
+	return(forecastPV,ghi_API_interpol,cloud_interpol,temp_interpol,ghi_interpol)
 
 
-#def forecastxxx(date_from_DB):
-#	db = sqlite3.connect(config.dbfilepath)
-#	cur = db.cursor()
-#
-#	cur.execute("SELECT * FROM solarLog WHERE datetime LIKE ?", (date_from_DB+'%' ,))
-#	data = cur.fetchall()
-#
-#	solar = list(zip(*data)[1])
-#	solar = [x*100 for x in solar]
-#	addsolar = [0]*12
-#	solar = addsolar + solar
-#	return(solar)
+
+
 

@@ -100,6 +100,10 @@ def selectEnergyDB(year="0", mode="sum"):
 def index():
 	return render_template("index.html")
 
+@app.route("/analyse")
+def analyse():
+	return render_template("analyse.html")
+
 @app.route("/energystats")
 @app.route("/energystats/<year>")
 def energystats(year="2017"):
@@ -213,6 +217,7 @@ def check_missing_data():
 def alarmprotokoll():
 	f = open(config.alarmfilepath, 'r')
 	s = f.read()
+	s=s.replace ('\n', '<br>')
 	f.close()
 	return(s)
 
@@ -257,9 +262,15 @@ def showtimeseriesJSON():
 
     # FORECAST MODUL #
     try:
-    	fcast_pv = forecast.forecast(date_from_DB)
+    	fcast_pv,ghi_API,cloud,temp,ghi = forecast.forecast(date_from_DB)
+
+    	err = [0]*288
+    	for i in range(0,288):
+    		err[i] = power_pv[i] - fcast_pv[i]
+
     except:
     	fcast_pv = []
+    	err = []
 
     return jsonify(power_bez=power_bez, actual_power_bez=actual_power_bez, today_energy_bez=today_energy_bez, power_einsp=power_einsp, 
 		actual_power_einsp=actual_power_einsp, 
@@ -268,7 +279,12 @@ def showtimeseriesJSON():
 		actual_power_pv=actual_power_pv, 
 		today_energy_pv=today_energy_pv, 
 		timestampList=timestampList,
-		fcast_pv=fcast_pv)	
+		fcast_pv=fcast_pv,
+		ghi_API=ghi_API,
+		cloud=cloud,
+		temp=temp,
+		ghi=ghi,
+		err=err)	
     
 @app.before_request
 def before_request():
