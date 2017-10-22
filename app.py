@@ -271,6 +271,10 @@ def showtimeseriesJSON():
     except:
     	fcast_pv = []
     	err = []
+    	ghi_API = []
+    	ghi = []
+    	cloud = []
+    	temp = []
 
     return jsonify(power_bez=power_bez, actual_power_bez=actual_power_bez, today_energy_bez=today_energy_bez, power_einsp=power_einsp, 
 		actual_power_einsp=actual_power_einsp, 
