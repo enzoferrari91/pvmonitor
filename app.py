@@ -274,7 +274,7 @@ def showtimeseriesJSON():
     # FORECAST MODUL #
     try:
     	fcast_pv,ghi_API,cloud,temp,ghi = forecast.forecast(date_from_DB)
-
+    	
     	err = [0]*288
     	for i in range(0,288):
     		err[i] = power_pv[i] - fcast_pv[i]
