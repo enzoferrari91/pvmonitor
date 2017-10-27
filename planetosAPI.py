@@ -40,14 +40,14 @@ from_zone = tz.gettz('UTC')
 to_zone = tz.gettz('Europe/Vienna')
 
 var = "Downward_Short-Wave_Radiation_Flux_surface"
-count=10
+count=30
 
 today = datetime.today()
 yesterday = today - timedelta(days=1)
 url_date = datetime.strftime(yesterday, '%Y-%m-%d')
 
 timestamp_base = datetime(today.year, today.month, today.day, 0, 0, 0, 0)
-timestamp_list = [timestamp_base + timedelta(hours=x*3) for x in range(0, 8)]
+timestamp_list = [timestamp_base + timedelta(hours=x) for x in range(0, 24)]
 timestamp_list = [UTCtoCET(timestamp) for timestamp in timestamp_list]
 
 url = ( "http://api.planetos.com/v1/datasets/noaa_gfs_global_sflux_0.12d/point?" +
@@ -57,6 +57,7 @@ url = ( "http://api.planetos.com/v1/datasets/noaa_gfs_global_sflux_0.12d/point?"
 		"&var="   + var +
 		"&reftime_start=" + url_date + "T18:00:00Z&count=" + str(count) )
 
+print (url)
 r = requests.get(url)
 data = json.loads(r.text)
 
@@ -66,7 +67,7 @@ ghi=list()
 out=list()
 out.append(timestamp_list)
 
-for x in range(2,count):
+for x in range(6,count):
 	time.append(data['entries'][x]['axes']['time'])
 	ghi.append(data['entries'][x]['data'][var])
 

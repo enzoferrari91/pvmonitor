@@ -173,6 +173,13 @@ $(function () {
                 data: total_energy_einsp,
                 color: '#3498db',
                 borderColor  : '#3498db'
+            },
+            {
+                type: 'column',
+                name: 'Ersparnisse gesamt',
+                data: total_savings,
+                color: '#5a508e',
+                borderColor  : '#5a508e'
             }
         ]
     });
@@ -264,6 +271,78 @@ $(function () {
                 name: 'Eigenverbrauchsquote monatlich',
                 data: list_ev_quote_month,
                 color: '#f1c40f'
+            }
+        ]
+    });
+    $('#container4').highcharts({
+        
+        colors: ["#2b908f", "#90ee7e"],
+        chart: {
+            backgroundColor: '#3e3e40',
+        },
+        title: {
+            text: '',
+            style: {
+                display: 'none'
+            }
+        },
+        xAxis: {
+            categories: months,
+            gridLineColor: '#707073',
+            labels: {
+                style: {
+                    color: '#ddd',
+                    fontSize: '14px'
+                }
+            },
+            lineColor: '#707073',
+            minorGridLineColor: '#505053',
+            tickColor: '#707073',
+        },
+        yAxis: {
+            title: {
+                text: 'Ersparnisse [ EUR ]',
+                style: {
+                    color: '#ddd',
+                    fontSize: '14px'
+                }
+            },
+            gridLineColor: '#707073',
+            labels: {
+                style: {
+                    color: '#ddd'
+                }
+            },
+            lineColor: '#707073',
+            minorGridLineColor: '#505053',
+            tickColor: '#707073',
+            tickWidth: 1,
+        },
+        
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0,
+            
+            itemStyle: {
+                color: '#ddd'
+            },
+            itemHoverStyle: {
+                color: '#fff'
+            },
+            itemHiddenStyle: {
+                color: '#ddd'
+            }           
+        },
+        
+        series: [
+            {
+                type: 'column',
+                name: 'Ersparnisse monatlich',
+                data:  list_savings_month,
+                color: '#5a508e',
+                borderColor  : '#5a508e'
             }
         ]
     });

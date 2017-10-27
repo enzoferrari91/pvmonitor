@@ -79,6 +79,9 @@
                             <br>
                             <br>
                             <div id="container3"></div>
+                            <br>
+                            <br>
+                            <div id="container4"></div>
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -117,12 +120,16 @@
         var total_energy_pv = [ {{ total_energy_pv|safe }} ]; //globale Variablen
         var total_energy_bez = [ {{ total_energy_bez|safe }} ]; //globale Variablen
         var total_energy_einsp = [ {{ total_energy_einsp|safe }} ]; //globale Variablen
+        var total_savings = [ {{ total_savings|safe }} ]; //globale Variablen
 
-        var timestampList = {{ timestampList|safe }}
+        var timestampList = {{ timestampList|safe }};
 
         var list_month_energy_bez = {{ list_month_energy_bez|safe }};
         var list_month_energy_einsp = {{ list_month_energy_einsp|safe }};
         var list_month_energy_pv = {{ list_month_energy_pv|safe }};
+
+        var list_savings_month = {{ list_savings_month|safe }};
+
         var months = {{ months|safe }};
 
 

@@ -127,6 +127,11 @@ def energystats(year="2017"):
 	total_energy_einsp = sum(list_energy_einsp)
 	total_energy_pv = sum(list_energy_pv)
 
+	##### TOTAL SAVINGS #####################################################
+	price_bezug = 0.18
+	price_einsp = 0.029
+	total_savings = (total_energy_pv - total_energy_einsp) * price_bezug + total_energy_einsp * price_einsp
+
 	months = ["01","02","03","04","05","06","07","08","09","10","11","12"]
 	list_month_energy_bez = list()
 	list_month_energy_einsp = list()
@@ -144,15 +149,19 @@ def energystats(year="2017"):
 		list_month_energy_einsp.append(month_energy_einsp)
 		list_month_energy_pv.append(month_energy_pv)
 
-	# Berechnung Eigenverbrauchsquote pro Monat ################################
+	# Berechnung Eigenverbrauchsquote und Ersparnisse pro Monat ################################
 	list_ev_quote_month= list()
+	list_savings_month= list()
 	for i in range(0,len(months)):
 		try:
 			ev_quote_month = (1 - (list_month_energy_einsp[i] / list_month_energy_pv[i])) * 100
 			ev_quote_month = round(ev_quote_month,0)
 			list_ev_quote_month.append(ev_quote_month)
+			savings_month = (list_month_energy_pv[i] - list_month_energy_einsp[i]) * price_bezug + list_month_energy_einsp[i] * price_einsp
+			list_savings_month.append(savings_month)
 		except:
 			list_ev_quote_month.append(0)
+			list_savings_month.append(0)
 	############################################################################
 
 	return render_template("energystats.html", 
@@ -162,11 +171,13 @@ def energystats(year="2017"):
 							total_energy_pv=total_energy_pv,
 							total_energy_bez=total_energy_bez,
 							total_energy_einsp=total_energy_einsp,
+							total_savings=total_savings,
 							timestampList=timestampList,
 							list_month_energy_bez=list_month_energy_bez,
 							list_month_energy_einsp=list_month_energy_einsp,
 							list_month_energy_pv=list_month_energy_pv,
 							list_ev_quote_month=list_ev_quote_month,
+							list_savings_month=list_savings_month,
 							months=months)
 
 @app.route("/system_messages")
