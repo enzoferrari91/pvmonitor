@@ -106,7 +106,7 @@ def analyse():
 
 @app.route("/energystats")
 @app.route("/energystats/<year>")
-def energystats(year="2017"):
+def energystats(year="2018"):
 	list_energy_bez, list_energy_einsp, list_energy_pv, timestampList = selectEnergyDB(year=year, mode="list")
 	list_energy_bez = [0 if x is None else x for x in list_energy_bez]
 	list_energy_einsp = [0 if x is None else x for x in list_energy_einsp]

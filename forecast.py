@@ -119,6 +119,6 @@ def forecast(date_from_DB):
 	return(forecastPV,ghi_API_interpol,cloud_interpol,temp_interpol,ghi_interpol)
 
 
-forecast("2017-06-02")
+#forecast("2017-06-02")
 
 
